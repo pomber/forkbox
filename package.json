@@ -1,0 +1,12 @@
+{
+  "name": "gitpizza",
+  "scripts": {
+    "storybook": "start-storybook -p 9001 -c .storybook"
+  },
+  "dependencies": {
+    "@storybook/react": "^3.4.7",
+    "babel-core": "^6.26.3",
+    "react": "./lib/react",
+    "react-dom": "./lib/react-dom"
+  }
+}
