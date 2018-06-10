@@ -4,30 +4,40 @@ let promises = {};
 
 let cache = {};
 
-const get = (load, hash) => {
-  const key = hash;
+const get = loader => {
+  const key = loader.hash();
   const value = cache[key];
   if (value) return value;
 
   if (!promises[key]) {
-    promises[key] = load().then(tree => (cache[key] = tree));
+    promises[key] = loader.load().then(tree => (cache[key] = tree));
   }
   throw promises[key];
 };
 
-const Wrapper = ({ load, hash, children }) =>
-  load ? children(get(load, hash)) : children;
+const ProviderContext = React.createContext();
 
-export const Loader = ({ load, hash, placeholder, children }) => (
-  <React.Timeout ms={0}>
-    {didTimeout =>
-      didTimeout ? (
-        <Wrapper>{placeholder}</Wrapper>
-      ) : (
-        <Wrapper load={load} hash={hash}>
-          {children}
-        </Wrapper>
-      )
-    }
-  </React.Timeout>
+const Wrapper = ({ loader, children }) =>
+  loader ? children(get(loader)) : children;
+
+export const Loader = ({ load, placeholder, children }) => (
+  <ProviderContext.Consumer>
+    {provider => (
+      <React.Timeout ms={0}>
+        {didTimeout =>
+          didTimeout ? (
+            <Wrapper>{placeholder}</Wrapper>
+          ) : (
+            <Wrapper loader={load(provider)}>{children}</Wrapper>
+          )
+        }
+      </React.Timeout>
+    )}
+  </ProviderContext.Consumer>
+);
+
+export const LoaderProvider = ({ provider, children }) => (
+  <ProviderContext.Provider value={provider}>
+    {children}
+  </ProviderContext.Provider>
 );
