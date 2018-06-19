@@ -1,21 +1,39 @@
 import React from "react";
-import { Loader } from "./hitchcock";
+import { Loader } from "./utils/hitchcock";
+import * as S from "./styles";
+import { Toggle } from "./utils/state";
 
-const TreeLoader = ({ path, children }) => (
-  <Loader
-    load={provider => provider.loadTree(path)}
-    hash={"tree" + path}
-    children={children}
-    placeholder={<div>Loading...</div>}
-  />
+const FileNode = ({ entry }) => (
+  <Toggle startOn={true}>
+    {({ on: collapsed, toggle }) => (
+      <div>
+        <S.EntryNode
+          collapsed={collapsed}
+          name={entry.name}
+          isTree={entry.isTree}
+          onClick={toggle}
+        />
+        {entry.isTree && (
+          <S.EntryChildren hidden={collapsed}>
+            <FileTree path={entry.path} lazy={collapsed} />
+          </S.EntryChildren>
+        )}
+      </div>
+    )}
+  </Toggle>
 );
 
-const FileNode = ({ entry }) => <div>{entry.name}</div>;
-
-const FileTree = ({ path, selectEntry }) => (
-  <TreeLoader path={path}>
-    {entries => entries.map(entry => <FileNode entry={entry} />)}
-  </TreeLoader>
+const FileTree = ({ path, lazy, selectEntry }) => (
+  <Loader
+    getSource={sources => sources.tree(path)}
+    placeholder={<div>Loading...</div>}
+    lazy={lazy}
+    subscribe
+  >
+    {entries =>
+      entries.map(entry => <FileNode entry={entry} key={entry.name} />)
+    }
+  </Loader>
 );
 
 export default FileTree;
