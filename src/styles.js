@@ -1,4 +1,3 @@
-//TODO add babel plugin
 import styled from "react-emotion";
 import React from "react";
 
