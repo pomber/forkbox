@@ -2,3 +2,8 @@
   Command = "yarn build && yarn build:lambda"
   Functions = "dist-lambda"
   Publish = "dist-static"
+  
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
