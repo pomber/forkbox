@@ -15,13 +15,16 @@ const mapEntries = (parentPath, entries) =>
 const sources = {
   ghToken: () => ({
     hash: () => "gh-token",
+    get: () => localStorage["gh-token"],
     fetch: cache => {
       const code = cache.getByKey("gh-code");
       if (code === undefined) {
         throw new MissingValue("gh-code");
       }
       return fetchers.getGhToken(code);
-      //TODO store with localStorage.setItem("gh-token", token)
+    },
+    store: (token, cache) => {
+      localStorage.setItem("gh-token", token);
     }
   }),
   tree: path => ({

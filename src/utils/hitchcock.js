@@ -9,8 +9,10 @@ let cache = {
   getFromSource: (source, lazy) => {
     const key = source.hash();
     console.log("getFromSource", key);
-    const value = cache.resources[key];
-    if (value) {
+
+    const value = source.get ? source.get(cache) : cache.resources[key];
+
+    if (value !== undefined) {
       console.log("value", value);
       return source.view ? source.view(cache) : value;
     }
