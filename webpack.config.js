@@ -37,7 +37,9 @@ module.exports = {
     }),
     new WebpackMd5Hash(),
     new MonacoWebpackPlugin(),
-    new DotenvPlugin()
+    new DotenvPlugin({
+      systemvars: true
+    })
   ],
   devServer: {
     port: 3000,
