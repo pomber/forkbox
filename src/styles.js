@@ -32,11 +32,12 @@ export const EntryNode = ({ collapsed, name, isTree, ...rest }) => (
   </div>
 );
 
-export const EntryChildren = ({ children, ...rest }) => (
+export const EntryChildren = ({ children, hide, ...rest }) => (
   <div
     css={`
       overflow-y: auto;
       margin-left: 16px;
+      display: ${hide && "none"};
     `}
     {...rest}
   >

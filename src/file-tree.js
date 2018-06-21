@@ -14,7 +14,7 @@ const FileNode = ({ entry }) => (
           onClick={toggle}
         />
         {entry.isTree && (
-          <S.EntryChildren hidden={collapsed}>
+          <S.EntryChildren hide={collapsed}>
             <FileTree path={entry.path} lazy={collapsed} />
           </S.EntryChildren>
         )}
