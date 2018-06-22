@@ -1,5 +1,18 @@
 import styled from "react-emotion";
+import { injectGlobal } from "emotion";
 import React from "react";
+
+export const injectGlobalStyle = () => injectGlobal`
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+`;
 
 const Truncate = ({ text }) => (
   <span
