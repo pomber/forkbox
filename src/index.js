@@ -4,6 +4,7 @@ import { SourcesProvider } from "./utils/hitchcock";
 import sources from "./github-sources";
 import App from "./app";
 import { injectGlobalStyle } from "./styles";
+import "./primer.css";
 
 injectGlobalStyle();
 

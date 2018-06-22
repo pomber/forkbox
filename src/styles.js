@@ -14,6 +14,43 @@ export const injectGlobalStyle = () => injectGlobal`
   }
 `;
 
+export const Box = ({ children }) => (
+  <div
+    css={`
+      display: flex;
+      flex-direction: row;
+      background: #222;
+      color: #fafafa;
+      height: 100%;
+    `}
+  >
+    {children}
+  </div>
+);
+
+export const FilePanel = ({ children }) => (
+  <div
+    css={`
+      width: 200px;
+      height: 100%;
+      padding: 10px;
+    `}
+  >
+    {children}
+  </div>
+);
+
+export const CodePanel = ({ children }) => (
+  <div
+    css={`
+      flex: 1;
+      overflow: hidden;
+    `}
+  >
+    {children}
+  </div>
+);
+
 const Truncate = ({ text }) => (
   <span
     className="branch-ref css-truncate css-truncate-target"

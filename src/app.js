@@ -38,7 +38,7 @@ const BoxPage = ({ location, ...rest }) => (
 );
 
 const App = () => (
-  <Router>
+  <Router style={{ height: "100%" }}>
     <Landing path="/" />
     <GhCodeWriter path="/gh-callback/*" />
     <BoxPage path="/x/:user/:repoName/:boxId" />
