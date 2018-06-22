@@ -8,7 +8,7 @@ const Box = ({ user, repoName, boxId }) => (
     getSource={sources => sources.repo(user, repoName, boxId)}
     placeholder={<div>Loading...</div>}
   >
-    {repoInfo => <FileTree path="/" />}
+    {repoInfo => <FileTree path="/" selectEntry={e => console.log(e)} />}
   </Loader>
 );
 

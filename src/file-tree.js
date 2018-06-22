@@ -3,7 +3,7 @@ import { Loader } from "./utils/hitchcock";
 import * as S from "./styles";
 import { Toggle } from "./utils/state";
 
-const FileNode = ({ entry }) => (
+const FileNode = ({ entry, selectEntry }) => (
   <Toggle startOn={true}>
     {({ on: collapsed, toggle }) => (
       <div>
@@ -11,11 +11,18 @@ const FileNode = ({ entry }) => (
           collapsed={collapsed}
           name={entry.name}
           isTree={entry.isTree}
-          onClick={toggle}
+          onClick={() => {
+            toggle();
+            selectEntry(entry);
+          }}
         />
         {entry.isTree && (
           <S.EntryChildren hide={collapsed}>
-            <FileTree path={entry.path} lazy={collapsed} />
+            <FileTree
+              path={entry.path}
+              lazy={collapsed}
+              selectEntry={selectEntry}
+            />
           </S.EntryChildren>
         )}
       </div>
@@ -31,7 +38,9 @@ const FileTree = ({ path, lazy, selectEntry }) => (
     subscribe
   >
     {entries =>
-      entries.map(entry => <FileNode entry={entry} key={entry.name} />)
+      entries.map(entry => (
+        <FileNode entry={entry} key={entry.name} selectEntry={selectEntry} />
+      ))
     }
   </Loader>
 );
