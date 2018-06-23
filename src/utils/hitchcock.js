@@ -1,5 +1,4 @@
 import React from "react";
-
 const neverResolve = new Promise(() => {});
 
 let cache = {
@@ -51,7 +50,8 @@ const SourcesContext = React.createContext();
 export const Loader = ({ getSource, placeholder, lazy, children }) => (
   <SourcesContext.Consumer>
     {sources => (
-      <React.Timeout ms={0}>
+      // TODO check https://developers.google.com/web/fundamentals/performance/rail
+      <React.Timeout ms={300}>
         {didTimeout =>
           didTimeout ? (
             <Wrapper>{placeholder}</Wrapper>

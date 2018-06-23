@@ -1,4 +1,5 @@
 import React from "react";
+import ReactDOM from "react-dom";
 
 export class State extends React.Component {
   state = { ...this.props.init };
@@ -26,10 +27,14 @@ export class State extends React.Component {
   }
 }
 
-export const Toggle = ({ startOn, children }) => (
+export const Toggle = ({ startOn, deferred, children }) => (
   <State
     init={{ on: startOn }}
-    map={(s, ss) => ({ on: s.on, toggle: () => ss(ps => ({ on: !ps.on })) })}
+    map={(s, ss, dss) => ({
+      on: s.on,
+      toggle: () =>
+        deferred ? dss(ps => ({ on: !ps.on })) : ss(ps => ({ on: !ps.on }))
+    })}
   >
     {children}
   </State>

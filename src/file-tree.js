@@ -4,7 +4,9 @@ import * as S from "./styles";
 import { Toggle } from "./utils/state";
 
 const FileNode = ({ entry, selectEntry }) => (
-  <Toggle startOn={true}>
+  // TODO: I think deferred doesn't work here because FileTree Loader is lazy
+  // so the timeout is already expired when collapsed is toggled
+  <Toggle startOn={true} deferred>
     {({ on: collapsed, toggle }) => (
       <div>
         <S.EntryNode

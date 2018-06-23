@@ -14,12 +14,12 @@ const Box = ({ user, repoName, boxId }) => (
       {repoInfo => (
         <State
           init={{ selectedTree: "/", selectedBlob: "/README.md" }}
-          map={(s, ss) => ({
+          map={(s, ss, dss) => ({
             ...s,
             selectEntry: entry =>
               entry.isTree
-                ? ss({ selectedTree: entry.path })
-                : ss({ selectedBlob: entry.path, selectedTree: entry.path })
+                ? dss({ selectedTree: entry.path })
+                : dss({ selectedBlob: entry.path, selectedTree: entry.path })
           })}
         >
           {({ selectedTree, selectedBlob, selectEntry }) => (
