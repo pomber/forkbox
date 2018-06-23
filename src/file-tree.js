@@ -3,7 +3,7 @@ import { Loader } from "./utils/hitchcock";
 import * as S from "./styles";
 import { Toggle } from "./utils/state";
 
-const FileNode = ({ entry, selectEntry }) => (
+const FileNode = ({ entry, selectEntry, isDirty }) => (
   // TODO: I think deferred doesn't work here because FileTree Loader is lazy
   // so the timeout is already expired when collapsed is toggled
   <Toggle startOn={true} deferred>
@@ -13,6 +13,7 @@ const FileNode = ({ entry, selectEntry }) => (
           collapsed={collapsed}
           name={entry.name}
           isTree={entry.isTree}
+          isDirty={isDirty(entry.path)}
           onClick={() => {
             toggle();
             selectEntry(entry);
@@ -24,6 +25,7 @@ const FileNode = ({ entry, selectEntry }) => (
               path={entry.path}
               lazy={collapsed}
               selectEntry={selectEntry}
+              isDirty={isDirty}
             />
           </S.EntryChildren>
         )}
@@ -32,7 +34,7 @@ const FileNode = ({ entry, selectEntry }) => (
   </Toggle>
 );
 
-const FileTree = ({ path, lazy, selectEntry }) => (
+const FileTree = ({ path, lazy, selectEntry, isDirty }) => (
   <Loader
     getSource={sources => sources.tree(path)}
     placeholder={<div>Loading...</div>}
@@ -41,7 +43,12 @@ const FileTree = ({ path, lazy, selectEntry }) => (
   >
     {entries =>
       entries.map(entry => (
-        <FileNode entry={entry} key={entry.name} selectEntry={selectEntry} />
+        <FileNode
+          entry={entry}
+          key={entry.name}
+          selectEntry={selectEntry}
+          isDirty={isDirty}
+        />
       ))
     }
   </Loader>
