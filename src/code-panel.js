@@ -1,30 +1,21 @@
 import React from "react";
 import MonacoEditor from "react-monaco-editor";
-import { Loader } from "./utils/hitchcock";
 import * as S from "./styles";
-import { getLanguage } from "./utils/gh-entry";
 
 const options = {
   minimap: { enabled: false },
-  lineNumbers: "on",
+  lineNumbers: "off",
   scrollBeyondLastLine: false
 };
 
-const CodePanel = ({ path }) => (
+const CodePanel = ({ text, language, onChange }) => (
   <S.CodePanel>
-    <Loader
-      getSource={sources => sources.blobText(path)}
-      placeholder={<div>Loading...</div>}
-    >
-      {text => (
-        <MonacoEditor
-          value={text}
-          options={options}
-          onChange={() => null}
-          language={getLanguage(path)}
-        />
-      )}
-    </Loader>
+    <MonacoEditor
+      value={text}
+      options={options}
+      onChange={onChange}
+      language={language}
+    />
   </S.CodePanel>
 );
 
