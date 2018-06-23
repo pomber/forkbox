@@ -1,6 +1,6 @@
 import React from "react";
 
-class State extends React.Component {
+export class State extends React.Component {
   state = { ...this.props.init };
 
   componentDidMount() {
