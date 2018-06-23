@@ -27,6 +27,7 @@
     "react": "./lib/react",
     "react-dom": "./lib/react-dom",
     "react-emotion": "^9.2.3",
+    "react-icons": "^2.2.7",
     "react-monaco-editor": "^0.17.2",
     "style-loader": "^0.21.0",
     "webpack": "^4.12.0",

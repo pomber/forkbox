@@ -40,6 +40,25 @@ export const FilePanel = ({ children }) => (
   </div>
 );
 
+export const FilePanelButtons = ({ children }) => (
+  <div
+    css={`
+      color: rgba(120, 120, 120, 1);
+      border-bottom: 1px solid rgba(120, 120, 120, 0.5);
+      margin-bottom: 3px;
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-end;
+      & > * {
+        cursor: pointer;
+        margin: 2px 2px 4px 2px;
+      }
+    `}
+  >
+    {children}
+  </div>
+);
+
 export const CodePanel = ({ children }) => (
   <div
     css={`
