@@ -61,13 +61,21 @@ const Truncate = ({ text }) => (
   </span>
 );
 
-export const EntryNode = ({ collapsed, name, isTree, isDirty, ...rest }) => (
+export const EntryNode = ({
+  collapsed,
+  name,
+  isTree,
+  isDirty,
+  isSelected,
+  ...rest
+}) => (
   <div
     css={`
       display: flex;
       cursor: pointer;
       color: ${isDirty ? "#eee" : "#aaa"};
       font-style: ${isDirty && "italic"};
+      background: ${isSelected && !isTree && "rgba(120,120,120,0.25)"};
     `}
     {...rest}
   >

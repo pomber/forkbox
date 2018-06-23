@@ -16,6 +16,10 @@ const BoxState = ({ children }) => (
           ? dss({ selectedTree: entry.path })
           : dss({ selectedBlob: entry.path, selectedTree: entry.path }),
       isDirty: path => path in s.editedText,
+      isSelected: entry =>
+        entry.isTree
+          ? entry.path === s.selectedTree
+          : entry.path === s.selectedBlob,
       updateText: text =>
         ss(ps => ({
           editedText: { ...ps.editedText, ...{ [ps.selectedBlob]: text } }
@@ -41,10 +45,15 @@ const Box = ({ user, repoName, boxId }) => (
             selectEntry,
             updateText,
             currentText,
-            isDirty
+            isDirty,
+            isSelected
           }) => (
             <React.Fragment>
-              <FilePanel selectEntry={selectEntry} isDirty={isDirty} />
+              <FilePanel
+                selectEntry={selectEntry}
+                isDirty={isDirty}
+                isSelected={isSelected}
+              />
               <Loader
                 getSource={sources => sources.blobText(selectedBlob)}
                 placeholder={<div>Loading...</div>}
