@@ -1,5 +1,12 @@
 import gql from "./utils/gql";
 
+export const getGhToken = code =>
+  fetch("/.netlify/functions/gh-token?code=" + code)
+    .then(r => r.json())
+    .then(({ access_token }) => {
+      return access_token;
+    });
+
 export const getTree = ({ token, repoId, entryId }) => gql`
   ${token}
   ${{ repoId, entryId }}
@@ -55,9 +62,19 @@ export const getRepo = ({ token, user, repoName, boxId }) => gql`
   }
 `;
 
-export const getGhToken = code =>
-  fetch("/.netlify/functions/gh-token?code=" + code)
-    .then(r => r.json())
-    .then(({ access_token }) => {
-      return access_token;
-    });
+export const getBlobText = ({ token, repoId, entryId }) => gql`
+  ${token}
+  ${{ repoId, entryId }}
+  ${({ repository }) => repository.object.text}
+  query($repoId: ID!, $entryId: GitObjectID!) {
+    repository: node(id: $repoId) {
+      ... on Repository {
+        object(oid: $entryId) {
+          ... on Blob {
+            text
+          }
+        }
+      }
+    }
+  }
+`;

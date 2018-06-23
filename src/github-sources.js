@@ -48,6 +48,15 @@ const sources = {
       return paths.map(childPath => cache.getByKey("entry" + childPath));
     }
   }),
+  blobText: path => ({
+    hash: () => "text" + path,
+    fetch: cache => {
+      const token = cache.getFromSource(sources.ghToken());
+      const repoId = cache.getByKey("repo").id;
+      const entryId = cache.getByKey("entry" + path).sha;
+      return fetchers.getBlobText({ token, repoId, entryId });
+    }
+  }),
   repo: (user, repoName, boxId) => ({
     hash: () => "repo",
     fetch: cache => {

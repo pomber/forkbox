@@ -13,7 +13,7 @@ const Box = ({ user, repoName, boxId }) => (
       {repoInfo => (
         <React.Fragment>
           <FilePanel selectEntry={e => console.log(e)} />
-          <CodePanel />
+          <CodePanel path={"/README.md"} />
         </React.Fragment>
       )}
     </Loader>

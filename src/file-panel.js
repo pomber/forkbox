@@ -2,9 +2,9 @@ import React from "react";
 import * as S from "./styles";
 import FileTree from "./file-tree";
 
-const FilePanel = () => (
+const FilePanel = ({ selectEntry }) => (
   <S.FilePanel>
-    <FileTree path="/" selectEntry={e => console.log(e)} />
+    <FileTree path="/" selectEntry={selectEntry} />
   </S.FilePanel>
 );
 
