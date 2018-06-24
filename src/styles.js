@@ -109,6 +109,94 @@ export const Button = ({ large, transparent, children }) => (
   </button>
 );
 
+export const Picker = styled.div`
+  display: flex;
+  flex-flow: wrap;
+  justify-content: center;
+  max-width: 400px;
+`;
+
+export const Choice = ({
+  icon,
+  label,
+  selected,
+  color = "#0078d4",
+  onSelect
+}) => (
+  <div
+    css={`
+      background-color: #fafafa;
+      color: #222;
+      display: inline-flex;
+      position: relative;
+      align-items: center;
+      margin: 0 4px 4px 0;
+    `}
+  >
+    <label
+      onClick={onSelect}
+      className={selected ? "selected" : ""}
+      css={`
+        border: 2px solid;
+        border-color: ${selected ? color : "transparent"};
+        padding-top: 22px;
+        cursor: pointer;
+        text-align: center;
+        box-sizing: content-box;
+        &:hover {
+          border-color: ${color};
+        }
+        &:hover::before,
+        &.selected::before {
+          border: 1px solid ${color};
+          right: 6px;
+          top: 6px;
+          content: "";
+          display: inline-block;
+          width: 18px;
+          height: 18px;
+          position: absolute;
+          background-color: #fafafa;
+          border-radius: 50%;
+        }
+        &::after {
+          border: 5px solid ${color};
+          right: 11px;
+          top: 11px;
+          content: ${selected ? "''" : ""};
+          display: inline-block;
+          width: 0;
+          height: 0;
+          position: absolute;
+          border-radius: 50%;
+        }
+      `}
+    >
+      <div
+        css={`
+          padding-left: 30px;
+          padding-right: 30px;
+        `}
+      >
+        {icon}
+      </div>
+      <div
+        css={`
+          margin: 4px 8px;
+          position: relative;
+          height: 30px;
+          line-height: 15px;
+          overflow: hidden;
+          font-size: 14px;
+          font-weight: 400;
+        `}
+      >
+        <span>{label}</span>
+      </div>
+    </label>
+  </div>
+);
+
 const Truncate = ({ text }) => (
   <span
     className="branch-ref css-truncate css-truncate-target"
