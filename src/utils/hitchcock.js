@@ -56,14 +56,24 @@ const Wrapper = ({ source, lazy, children }) =>
 
 const SourcesContext = React.createContext();
 
-export const Loader = ({ getSource, placeholder, lazy, children }) => (
+export const Loader = ({
+  getSource,
+  placeholder,
+  lazy,
+  defaultValue,
+  children
+}) => (
   <SourcesContext.Consumer>
     {sources => (
       // TODO check https://developers.google.com/web/fundamentals/performance/rail
       <React.Timeout ms={300}>
         {didTimeout =>
           didTimeout ? (
-            <Wrapper>{placeholder}</Wrapper>
+            defaultValue !== undefined ? (
+              <Wrapper>{children(defaultValue)}</Wrapper>
+            ) : (
+              <Wrapper>{placeholder}</Wrapper>
+            )
           ) : (
             <Wrapper source={getSource(sources)} lazy={lazy}>
               {children}

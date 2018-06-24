@@ -20,6 +20,16 @@ const GhCodeWriter = props => {
     </Writer>
   );
 };
+const ZeitCodeWriter = props => {
+  const query = new URLSearchParams(props.location.search);
+  const code = query.get("code");
+  const redirect = query.get("state");
+  return (
+    <Writer getSource={sources => sources.zeitCode(code)}>
+      <Redirect to={redirect} />
+    </Writer>
+  );
+};
 
 const getGhAuthUrl = (origin, path) =>
   `https://github.com/login/oauth/authorize?scope=public_repo&client_id=${
@@ -41,6 +51,7 @@ const App = () => (
   <Router style={{ height: "100%" }}>
     <Landing path="/" />
     <GhCodeWriter path="/gh-callback/*" />
+    <ZeitCodeWriter path="/zeit-callback/*" />
     <BoxPage path="/x/:user/:repoName/:boxId" />
   </Router>
 );

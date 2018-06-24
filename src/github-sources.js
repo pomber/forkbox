@@ -133,6 +133,26 @@ const sources = {
     store: cache => {
       cache.set("gh-code", code);
     }
+  }),
+  zeitCode: code => ({
+    hash: () => "zeit-code",
+    store: cache => {
+      cache.set("zeit-code", code);
+    }
+  }),
+  zeit: () => ({
+    hash: () => "zeit",
+    get: () => localStorage["zeit-token"],
+    fetch: cache => {
+      const code = cache.getByKey("zeit-code");
+      if (code === undefined) {
+        throw new MissingValue("zeit-code");
+      }
+      return fetchers.getZeitToken(code);
+    },
+    store: (token, cache) => {
+      localStorage.setItem("zeit-token", token);
+    }
   })
 };
 
