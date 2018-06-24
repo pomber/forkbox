@@ -6,7 +6,7 @@ import CodePanel from "./code-panel";
 import * as S from "./styles";
 import { getLanguage } from "./utils/gh-entry";
 
-const BoxState = ({ children }) => (
+const BoxState = ({ saveText, children }) => (
   <State
     init={{ selectedTree: "/", selectedBlob: "/README.md", editedText: {} }}
     map={(s, ss, dss) => ({
@@ -15,7 +15,7 @@ const BoxState = ({ children }) => (
         entry.isTree
           ? dss({ selectedTree: entry.path })
           : dss({ selectedBlob: entry.path, selectedTree: entry.path }),
-      isDirty: path => path in s.editedText,
+      isDirty: path => s.editedText[path],
       isSelected: entry =>
         entry.isTree
           ? entry.path === s.selectedTree
@@ -25,7 +25,12 @@ const BoxState = ({ children }) => (
           editedText: { ...ps.editedText, ...{ [ps.selectedBlob]: text } }
         })),
       currentText: originalText => s.editedText[s.selectedBlob] || originalText,
-      selectedEditedText: s.editedText[s.selectedBlob]
+      onSave: () => {
+        saveText(s.selectedBlob, s.editedText[s.selectedBlob]);
+        dss(ps => ({
+          editedText: { ...ps.editedText, [s.selectedBlob]: null }
+        }));
+      }
     })}
   >
     {children}
@@ -39,23 +44,23 @@ const Box = ({ user, repoName, boxId }) => (
       placeholder={<div>Loading box...</div>}
     >
       {({ repoInfo, saveText }) => (
-        <BoxState>
+        <BoxState saveText={saveText}>
           {({
             selectedTree,
             selectedBlob,
-            selectedEditedText,
             selectEntry,
             updateText,
             currentText,
             isDirty,
-            isSelected
+            isSelected,
+            onSave
           }) => (
             <React.Fragment>
               <FilePanel
                 selectEntry={selectEntry}
                 isDirty={isDirty}
                 isSelected={isSelected}
-                onSave={() => saveText(selectedBlob, selectedEditedText)}
+                onSave={onSave}
               />
               <Loader
                 getSource={sources => sources.blobText(selectedBlob)}
