@@ -7,10 +7,13 @@ const mapEntries = (parentPath, entries) =>
   entries
     .map(entry => ({
       ...entry,
+      byteSize: entry.object && entry.object.byteSize,
       isTree: entry.type === "tree",
       path: `${parentPath}${entry.name}${entry.type === "tree" ? "/" : ""}`
     }))
     .sort(entryComparer);
+
+const getBranchName = boxId => `devbox-${boxId}`;
 
 const sources = {
   ghToken: () => ({
@@ -55,6 +58,28 @@ const sources = {
       const repoId = cache.getByKey("repo").id;
       const entryId = cache.getByKey("entry" + path).sha;
       return fetchers.getBlobText({ token, repoId, entryId });
+    },
+    write: (text, cache) => {
+      const token = cache.getFromSource(sources.ghToken());
+      const { user, name, boxId } = cache.getByKey("repo");
+      const sha = cache.getByKey("entry" + path).sha;
+      fetchers
+        .commitBlobText({
+          token,
+          user,
+          repoName: name,
+          branchName: getBranchName(boxId),
+          path,
+          text,
+          sha
+        })
+        .then(({ sha, byteSize }) =>
+          cache.set("entry" + path, {
+            ...cache.getByKey("entry" + path),
+            sha,
+            byteSize
+          })
+        );
     }
   }),
   repo: (user, repoName, boxId) => ({
@@ -86,6 +111,16 @@ const sources = {
         cache.set("entry" + entry.path, entry);
       });
       cache.set("tree" + rootEntry.path, entries.map(entry => entry.path));
+    },
+    view: cache => {
+      return {
+        repoName: cache.getByKey("repo").name,
+        saveText: (path, text) => {
+          if (text != null) {
+            cache.write(sources.blobText(path), text);
+          }
+        }
+      };
     }
   }),
   code: code => ({

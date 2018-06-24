@@ -24,7 +24,8 @@ const BoxState = ({ children }) => (
         ss(ps => ({
           editedText: { ...ps.editedText, ...{ [ps.selectedBlob]: text } }
         })),
-      currentText: originalText => s.editedText[s.selectedBlob] || originalText
+      currentText: originalText => s.editedText[s.selectedBlob] || originalText,
+      selectedEditedText: s.editedText[s.selectedBlob]
     })}
   >
     {children}
@@ -37,11 +38,12 @@ const Box = ({ user, repoName, boxId }) => (
       getSource={sources => sources.repo(user, repoName, boxId)}
       placeholder={<div>Loading box...</div>}
     >
-      {repoInfo => (
+      {({ repoInfo, saveText }) => (
         <BoxState>
           {({
             selectedTree,
             selectedBlob,
+            selectedEditedText,
             selectEntry,
             updateText,
             currentText,
@@ -53,6 +55,7 @@ const Box = ({ user, repoName, boxId }) => (
                 selectEntry={selectEntry}
                 isDirty={isDirty}
                 isSelected={isSelected}
+                onSave={() => saveText(selectedBlob, selectedEditedText)}
               />
               <Loader
                 getSource={sources => sources.blobText(selectedBlob)}

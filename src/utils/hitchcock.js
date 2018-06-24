@@ -39,6 +39,15 @@ let cache = {
   },
   getByKey: key => {
     return cache.resources[key];
+  },
+  write: (source, value) => {
+    const key = source.hash();
+    if (source.store) {
+      source.store(value, cache);
+    } else {
+      cache.resources[key] = value;
+    }
+    source.write(value, cache);
   }
 };
 

@@ -78,3 +78,40 @@ export const getBlobText = ({ token, repoId, entryId }) => gql`
     }
   }
 `;
+
+function utoa(str) {
+  return window.btoa(unescape(encodeURIComponent(str)));
+}
+
+export const commitBlobText = async ({
+  token,
+  user,
+  repoName,
+  branchName,
+  path,
+  text,
+  sha
+}) => {
+  const url = `https://api.github.com/repos/${user}/${repoName}/contents${path}`;
+  const body = {
+    path,
+    sha,
+    branch: branchName,
+    content: utoa(text),
+    message: `Edit ${path}`
+  };
+
+  const response = await fetch(url, {
+    method: "put",
+    body: JSON.stringify(body),
+    headers: new Headers({ authorization: "Bearer " + token })
+  });
+
+  const data = await response.json();
+  console.log("updateblob", data);
+
+  return {
+    sha: data.content.sha,
+    byteSize: data.content.size
+  };
+};
