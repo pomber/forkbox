@@ -97,13 +97,14 @@ export const Select = withClass("form-select")(styled.select`
   width: 100%;
 `);
 
-export const Button = ({ large, transparent, children }) => (
+export const Button = ({ large, transparent, children, ...rest }) => (
   <button
     className={cx(
       "btn",
       large && "btn-large",
       transparent && "btn-transparent"
     )}
+    {...rest}
   >
     {children}
   </button>

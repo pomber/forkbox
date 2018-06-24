@@ -102,7 +102,8 @@ const sources = {
         id: repoInfo.id,
         user,
         name: repoName,
-        boxId
+        boxId,
+        url: repoInfo.url
       };
 
       cache.set("repo", repo);
@@ -113,8 +114,12 @@ const sources = {
       cache.set("tree" + rootEntry.path, entries.map(entry => entry.path));
     },
     view: cache => {
+      const { user, name, boxId, url } = cache.getByKey("repo");
       return {
-        repoName: cache.getByKey("repo").name,
+        user,
+        repoName: name,
+        repoUrl: url,
+        branchName: getBranchName(boxId),
         saveText: (path, text) => {
           if (text != null) {
             cache.write(sources.blobText(path), text);
