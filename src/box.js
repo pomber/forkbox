@@ -3,6 +3,7 @@ import { Loader } from "./utils/hitchcock";
 import { State } from "./utils/state";
 import FilePanel from "./file-panel";
 import CodePanel from "./code-panel";
+import TerminalPanel from "./terminal-panel";
 import * as S from "./styles";
 import { getLanguage } from "./utils/gh-entry";
 
@@ -74,6 +75,7 @@ const Box = ({ user, repoName, boxId }) => (
                   />
                 )}
               </Loader>
+              <TerminalPanel />
             </React.Fragment>
           )}
         </BoxState>
