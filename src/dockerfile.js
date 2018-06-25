@@ -23,7 +23,7 @@ WORKDIR /repo
 RUN git clone -b ${branchName} --single-branch ${repoUrl} .
 ${image.startsWith("node") ? "RUN yarn" : ""}
 
-CMD (watch -n 3 git pull &>/dev/null &) && gotty --permit-write --reconnect --title-format "devbox - server console" /bin/sh
+CMD (watch -n 3 git pull &>/dev/null &) && gotty --permit-write --reconnect --title-format "ForkBox Terminal" /bin/sh
 `;
 
 export default getDockerfile;
