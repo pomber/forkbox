@@ -152,6 +152,13 @@ const sources = {
     },
     store: (token, cache) => {
       localStorage.setItem("zeit-token", token);
+    },
+    view: cache => dockerfile => {
+      return fetchers.deployToZeit({
+        token: localStorage["zeit-token"],
+        repoName: cache.getByKey("repo").name,
+        dockerfile
+      });
     }
   })
 };

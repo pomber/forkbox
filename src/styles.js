@@ -244,3 +244,16 @@ export const EntryChildren = styled.div`
   margin-left: 16px;
   display: ${({ hide }) => hide && "none"};
 `;
+
+export const Step = ({ label, current, done }) => (
+  <div
+    css={`
+      width: 300px;
+      padding-bottom: 15px;
+    `}
+  >
+    <span className="text-mono">{done ? "[x] " : "[ ] "}</span>
+    <span>{label}</span>
+    <span>{current ? "..." : ""}</span>
+  </div>
+);

@@ -122,3 +122,24 @@ export const commitBlobText = async ({
     byteSize: data.content.size
   };
 };
+
+export const deployToZeit = async ({ token, dockerfile, repoName }) => {
+  const body = {
+    public: true,
+    name: "forkbox-" + repoName,
+    deploymentType: "DOCKER",
+    files: [{ file: "Dockerfile", data: dockerfile }]
+  };
+  const response = await fetch("https://api.zeit.co/v3/now/deployments", {
+    method: "post",
+    body: JSON.stringify(body),
+    headers: new Headers({
+      authorization: "Bearer " + token
+    })
+  });
+
+  const data = await response.json();
+  console.log("deploy", data);
+
+  return data;
+};
