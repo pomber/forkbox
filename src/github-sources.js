@@ -82,12 +82,12 @@ const sources = {
         );
     }
   }),
-  repo: (user, repoName, boxId) => ({
+  repo: (user, repoName, branch) => ({
     hash: () => "repo",
     fetch: cache => {
       console.log("fetch", repoName);
       const token = cache.getFromSource(sources.ghToken());
-      return fetchers.getRepo({ token, user, repoName, boxId });
+      return fetchers.getRepo({ token, user, repoName, branch });
     },
     store: (repoInfo, cache) => {
       const rootEntry = {
@@ -102,7 +102,7 @@ const sources = {
         id: repoInfo.id,
         user,
         name: repoName,
-        boxId,
+        branch,
         url: repoInfo.url
       };
 

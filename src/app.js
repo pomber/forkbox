@@ -20,6 +20,7 @@ const GhCodeWriter = props => {
     </Writer>
   );
 };
+
 const ZeitCodeWriter = props => {
   const query = new URLSearchParams(props.location.search);
   const code = query.get("code");
@@ -36,15 +37,19 @@ const getGhAuthUrl = (origin, path) =>
     process.env.GH_CLIENT_ID
   }&redirect_uri=${origin}/gh-callback${path}`;
 
-const BoxPage = ({ location, ...rest }) => (
+const BoxPage = ({ location, boxId, ...rest }) => (
   <ErrorBoundary
     when={error => error.isMissingValue && error.key === "gh-code"}
     catch={() =>
       window.location.replace(getGhAuthUrl(location.origin, location.pathname))
     }
   >
-    <Box {...rest} />
+    <Box {...rest} branch={"forkbox-" + boxId} />
   </ErrorBoundary>
+);
+
+const ForkPage = ({ owner, repoName, branch }) => (
+  <Box user={owner} repoName={repoName} branch={branch} />
 );
 
 const App = () => (
@@ -52,6 +57,8 @@ const App = () => (
     <Landing path="/" />
     <GhCodeWriter path="/gh-callback/*" />
     <ZeitCodeWriter path="/zeit-callback/*" />
+    <ForkPage path="/f/:owner/:repoName" branch="master" />
+    <ForkPage path="/f/:owner/:repoName/:branch" />
     <BoxPage path="/x/:user/:repoName/:boxId" />
   </Router>
 );

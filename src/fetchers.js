@@ -40,12 +40,12 @@ export const getTree = ({ token, repoId, entryId }) => gql`
   }
 `;
 
-export const getRepo = ({ token, user, repoName, boxId }) => gql`
+export const getRepo = ({ token, user, repoName, branch }) => gql`
   ${token}
-  ${{ user, repoName, branchExpression: "devbox-" + boxId + ":" }}
+  ${{ user, repoName, branchExpression: branch + ":" }}
   ${({ user }) => user.repository}
   query($user: String!, $repoName: String!, $branchExpression: String!) {
-    user(login: $user) {
+    user: repositoryOwner(login: $user) {
       repository(name: $repoName) {
         id
         url
@@ -141,5 +141,19 @@ export const deployToZeit = async ({ token, dockerfile, repoName }) => {
   const data = await response.json();
   console.log("deploy", data);
 
+  return data;
+};
+
+export const fork = async ({ token, owner, repoName }) => {
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repoName}/forks`,
+    {
+      method: "post",
+      headers: new Headers({
+        authorization: "Bearer " + token
+      })
+    }
+  );
+  const data = await response.json();
   return data;
 };

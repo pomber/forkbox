@@ -38,10 +38,10 @@ const BoxState = ({ saveText, children }) => (
   </State>
 );
 
-const Box = ({ user, repoName, boxId }) => (
+const Box = ({ user, repoName, branch }) => (
   <S.Box>
     <Loader
-      getSource={sources => sources.repo(user, repoName, boxId)}
+      getSource={sources => sources.repo(user, repoName, branch)}
       placeholder={<div>Loading box...</div>}
     >
       {({ repoInfo, saveText }) => (
