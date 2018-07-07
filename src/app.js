@@ -4,12 +4,14 @@ import FilePanel from "./file-panel";
 import CodePanel from "./code-panel";
 import { connect } from "react-redux";
 import * as api from "./api";
+import { fetchRepoIfNeeded } from "./actions";
 
 const TerminalPanel = () => <S.TerminalPanel>Terminal</S.TerminalPanel>;
 
 class App extends React.Component {
   componentDidMount() {
-    this.props.fetchRepo();
+    const { owner, repoName, baseBranch } = this.props;
+    this.props.fetchRepoIfNeeded(owner, repoName, baseBranch);
   }
   render() {
     return (
@@ -24,18 +26,9 @@ class App extends React.Component {
 
 const mapStateToProps = (state, {}) => ({});
 
-const mapDispatchToProps = (dispatch, { owner, repoName, baseBranch }) => ({
-  fetchRepo: async _ => {
-    const token = localStorage["gh-token"];
-    const result = await api.getRepo({
-      token,
-      owner,
-      repoName,
-      branch: baseBranch
-    });
-    dispatch({ type: "STORE_REPO", result });
-  }
-});
+const mapDispatchToProps = {
+  fetchRepoIfNeeded
+};
 
 export default connect(
   mapStateToProps,

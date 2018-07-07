@@ -1,6 +1,8 @@
 import React from "react";
-import { createStore } from "redux";
+import { createStore, applyMiddleware } from "redux";
 import { Provider } from "react-redux";
+import thunk from "redux-thunk";
+import * as actions from "./actions";
 
 const StoreProvider = props => <Provider store={store} {...props} />;
 
@@ -54,13 +56,17 @@ const defaultState = {
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case "TOGGLE_ENTRY":
+    case actions.TOGGLE_ENTRY:
       const path = action.entry.path;
       const oldEntry = state.entry[path];
-      const newEntry = { ...oldEntry, collapsed: !oldEntry.collapsed };
+      const newEntry = {
+        ...oldEntry,
+        collapsed: !oldEntry.collapsed,
+        loaded: true
+      };
       const entries = { ...state.entry, [path]: newEntry };
       return { ...state, entry: entries };
-    case "STORE_REPO":
+    case actions.RECEIVE_REPO:
       const { result } = action;
       const entryList = mapEntries("/", result.object.entries);
       const tree = { "/": entryList.map(e => e.path) };
@@ -69,12 +75,15 @@ const reducer = (state = defaultState, action) => {
         ...entryList.map(e => ({ [e.path]: e }))
       );
       return { ...state, tree, entry: entries2 };
+    case actions.RECEIVE_TREE:
+      console.log(action);
+      return state;
     default:
       return state;
   }
 };
 
-const store = createStore(reducer);
+const store = createStore(reducer, applyMiddleware(thunk));
 
 // utils
 

@@ -1,6 +1,7 @@
 import React from "react";
 import * as S from "./styles";
 import { connect } from "react-redux";
+import { toggleEntry } from "./actions";
 
 const FileNode = ({ entry, toggleEntry }) => (
   <div>
@@ -32,10 +33,8 @@ const mapStateToProps = (state, { path }) => {
   return { entries };
 };
 
-const mapDispatchToProps = (dispatch, { path }) => {
-  return {
-    toggleEntry: entry => dispatch({ type: "TOGGLE_ENTRY", entry })
-  };
+const mapDispatchToProps = {
+  toggleEntry
 };
 
 const FileTree = connect(
