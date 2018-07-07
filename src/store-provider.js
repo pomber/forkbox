@@ -20,14 +20,16 @@ const defaultState = {
     boxBranch: null //"forkbox-123123"
   },
   tree: {
-    "/": ["/foo", "/readme.md", "/package.json"]
+    "/": ["/src", "/readme.md", "/package.json"],
+    "/src": ["/src/index.js"]
   },
   entry: {
-    "/foo": {
+    "/src": {
       sha: "123123",
-      name: "foo",
-      path: "/foo",
-      isTree: true
+      name: "src",
+      path: "/src",
+      isTree: true,
+      collapsed: false
     },
     "/readme.md": {
       sha: "123124",
@@ -40,14 +42,24 @@ const defaultState = {
       name: "package.json",
       path: "/package.json",
       isTree: false
+    },
+    "/src/index.js": {
+      sha: "123114",
+      name: "index.js",
+      path: "/src/index.js",
+      isTree: false
     }
   }
 };
 
 const reducer = (state = defaultState, action) => {
   switch (action.type) {
-    case "foo":
-      return state;
+    case "TOGGLE_ENTRY":
+      const path = action.entry.path;
+      const oldEntry = state.entry[path];
+      const newEntry = { ...oldEntry, collapsed: !oldEntry.collapsed };
+      const entries = { ...state.entry, [path]: newEntry };
+      return { ...state, entry: entries };
     default:
       return state;
   }
