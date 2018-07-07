@@ -29,7 +29,7 @@ const FileTreeComponent = ({ entries, toggleEntry }) => (
 
 const mapStateToProps = (state, { path }) => {
   const tree = state.tree[path];
-  const entries = tree ? tree.map(entryPath => state.entry[entryPath]) : [];
+  const entries = tree ? tree.map(entryPath => state.entries[entryPath]) : [];
   return { entries };
 };
 

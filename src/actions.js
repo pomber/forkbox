@@ -6,7 +6,8 @@ export const RECEIVE_TREE = "RECEIVE_TREE";
 
 const receiveTree = (path, result) => ({
   type: RECEIVE_TREE,
-  result
+  path,
+  entries: result
 });
 
 const fetchTree = path => (dispatch, getState) => {
@@ -51,7 +52,12 @@ export const fetchRepoIfNeeded = (owner, repoName, branch) => (
   }
 };
 
-export const toggleEntry = entry => ({
-  type: TOGGLE_ENTRY,
-  entry
-});
+export const toggleEntry = entry => (dispatch, getState) => {
+  if (entry.isTree && !entry.loaded) {
+    dispatch(fetchTree(entry.path));
+  }
+  dispatch({
+    type: TOGGLE_ENTRY,
+    entry
+  });
+};

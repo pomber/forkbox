@@ -25,7 +25,7 @@ const defaultState = {
     "/": ["/src", "/readme.md", "/package.json"],
     "/src": ["/src/index.js"]
   },
-  entry: {
+  entries: {
     "/src": {
       sha: "123123",
       name: "src",
@@ -58,14 +58,14 @@ const reducer = (state = defaultState, action) => {
   switch (action.type) {
     case actions.TOGGLE_ENTRY:
       const path = action.entry.path;
-      const oldEntry = state.entry[path];
+      const oldEntry = state.entries[path];
       const newEntry = {
         ...oldEntry,
         collapsed: !oldEntry.collapsed,
         loaded: true
       };
-      const entries = { ...state.entry, [path]: newEntry };
-      return { ...state, entry: entries };
+      const entries = { ...state.entries, [path]: newEntry };
+      return { ...state, entries: entries };
     case actions.RECEIVE_REPO:
       const { result } = action;
       const entryList = mapEntries("/", result.object.entries);
@@ -74,10 +74,20 @@ const reducer = (state = defaultState, action) => {
         {},
         ...entryList.map(e => ({ [e.path]: e }))
       );
-      return { ...state, tree, entry: entries2 };
+      return { ...state, tree, entries: entries2, repoId: result.id };
     case actions.RECEIVE_TREE:
       console.log(action);
-      return state;
+      const entryList2 = mapEntries(action.path, action.entries);
+      const tree2 = {
+        ...state.tree,
+        [action.path]: entryList2.map(e => e.path)
+      };
+      const entries3 = Object.assign(
+        {},
+        state.entries,
+        ...entryList2.map(e => ({ [e.path]: e }))
+      );
+      return { ...state, tree: tree2, entries: entries3 };
     default:
       return state;
   }
