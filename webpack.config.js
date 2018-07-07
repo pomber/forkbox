@@ -4,6 +4,7 @@ const WebpackMd5Hash = require("webpack-md5-hash");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const DotenvPlugin = require("dotenv-webpack");
+const webpack = require("webpack");
 
 module.exports = {
   entry: { main: "./src/index.js" },
@@ -39,7 +40,12 @@ module.exports = {
     new MonacoWebpackPlugin(),
     new DotenvPlugin({
       systemvars: true
-    })
+    }),
+    // https://github.com/Microsoft/monaco-editor-webpack-plugin/issues/13#issuecomment-390806320
+    new webpack.ContextReplacementPlugin(
+      /monaco-editor(\\|\/)esm(\\|\/)vs(\\|\/)editor(\\|\/)common(\\|\/)services/,
+      __dirname
+    )
   ],
   devServer: {
     port: 3000,
