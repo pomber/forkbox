@@ -157,3 +157,15 @@ export const fork = async ({ token, owner, repoName }) => {
   const data = await response.json();
   return data;
 };
+
+export const branch = async ({ token, user, repo, baseSha, newBranch }) => {
+  const ref = "refs/heads/" + newBranch;
+
+  const url = `https://api.github.com/repos/${user}/${repo}/git/refs`;
+
+  await fetch(url, {
+    method: "post",
+    body: JSON.stringify({ ref, sha: baseSha }),
+    headers: new Headers({ authorization: token })
+  });
+};

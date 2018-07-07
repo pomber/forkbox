@@ -1,16 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { SourcesProvider } from "./utils/hitchcock";
-import sources from "./github-sources";
-import App from "./app";
 import { injectGlobalStyle } from "./styles";
 import "./primer.css";
+import App from "./app";
+import StoreProvider from "./store-provider";
 
 injectGlobalStyle();
 
-const root = ReactDOM.unstable_createRoot(document.getElementById("root"));
-root.render(
-  <SourcesProvider sources={sources}>
+ReactDOM.render(
+  <StoreProvider>
     <App />
-  </SourcesProvider>
+  </StoreProvider>,
+  document.getElementById("root")
 );

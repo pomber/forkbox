@@ -13,7 +13,7 @@ const mapEntries = (parentPath, entries) =>
     }))
     .sort(entryComparer);
 
-const getBranchName = boxId => `devbox-${boxId}`;
+const getBranchName = boxId => `forkbox-${boxId}`;
 
 const sources = {
   ghToken: () => ({
@@ -128,14 +128,33 @@ const sources = {
       };
     }
   }),
+  fork: (owner, repoName, branch) => ({
+    hash: () => `fork-${owner}/${repoName}/${branch}`,
+    fetch: cache => {
+      const token = cache.getFromSource(sources.ghToken());
+      fetchers.fork({ token, owner, repoName }).then(x => {
+        console.log(x);
+        const boxId = Date.now();
+        const { user, name } = cache.getByKey("repo");
+        const newBranch = getBranchName(boxId);
+        fetcher.branch({ token });
+      });
+    }
+  }),
   code: code => ({
     hash: () => "gh-code",
+    fetch: cache => {
+      return Promise.resolve();
+    },
     store: cache => {
       cache.set("gh-code", code);
     }
   }),
   zeitCode: code => ({
     hash: () => "zeit-code",
+    fetch: cache => {
+      return Promise.resolve();
+    },
     store: cache => {
       cache.set("zeit-code", code);
     }
