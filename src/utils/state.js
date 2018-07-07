@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-export class State extends React.Component {
+export class Component extends React.Component {
   state = { ...this.props.init };
 
   componentDidMount() {
@@ -28,7 +28,7 @@ export class State extends React.Component {
 }
 
 export const Toggle = ({ startOn, deferred, children }) => (
-  <State
+  <Component
     init={{ on: startOn }}
     map={(s, ss, dss) => ({
       on: s.on,
@@ -37,7 +37,7 @@ export const Toggle = ({ startOn, deferred, children }) => (
     })}
   >
     {children}
-  </State>
+  </Component>
 );
 
 export class ErrorBoundary extends React.Component {

@@ -60,9 +60,33 @@ const reducer = (state = defaultState, action) => {
       const newEntry = { ...oldEntry, collapsed: !oldEntry.collapsed };
       const entries = { ...state.entry, [path]: newEntry };
       return { ...state, entry: entries };
+    case "STORE_REPO":
+      const { result } = action;
+      const entryList = mapEntries("/", result.object.entries);
+      const tree = { "/": entryList.map(e => e.path) };
+      const entries2 = Object.assign(
+        {},
+        ...entryList.map(e => ({ [e.path]: e }))
+      );
+      return { ...state, tree, entry: entries2 };
     default:
       return state;
   }
 };
 
 const store = createStore(reducer);
+
+// utils
+
+const entryValue = e => (e.isTree ? "0" + e.name : "1" + e.name);
+const entryComparer = (a, b) => entryValue(a).localeCompare(entryValue(b));
+const mapEntries = (parentPath, entries) =>
+  entries
+    .map(entry => ({
+      ...entry,
+      byteSize: entry.object && entry.object.byteSize,
+      isTree: entry.type === "tree",
+      path: `${parentPath}${entry.name}${entry.type === "tree" ? "/" : ""}`,
+      collapsed: true
+    }))
+    .sort(entryComparer);

@@ -7,9 +7,14 @@ import StoreProvider from "./store-provider";
 
 injectGlobalStyle();
 
+//TODO get props from url
 ReactDOM.render(
   <StoreProvider>
-    <App />
+    <App
+      owner="forkboxlabs"
+      repoName="react-storybook-demo"
+      baseBranch="master"
+    />
   </StoreProvider>,
   document.getElementById("root")
 );
