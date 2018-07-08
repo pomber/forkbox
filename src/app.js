@@ -4,7 +4,7 @@ import FilePanel from "./file-panel";
 import CodePanel from "./code-panel";
 import { connect } from "react-redux";
 import * as api from "./api";
-import { fetchRepoIfNeeded } from "./actions";
+import { fetchRepoIfNeeded } from "./dispatchers";
 
 const TerminalPanel = () => <S.TerminalPanel>Terminal</S.TerminalPanel>;
 

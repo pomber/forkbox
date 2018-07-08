@@ -1,7 +1,7 @@
 import React from "react";
 import * as S from "./styles";
 import { connect } from "react-redux";
-import { toggleEntry } from "./actions";
+import { toggleEntry } from "./dispatchers";
 
 const FileNode = ({ entry, toggleEntry }) => (
   <div>
