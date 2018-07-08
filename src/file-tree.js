@@ -9,6 +9,7 @@ const FileNode = ({ entry, toggleEntry }) => (
       collapsed={entry.collapsed}
       name={entry.name}
       isTree={entry.isTree}
+      isSelected={entry.isSelected}
       onClick={() => toggleEntry(entry)}
     />
     {entry.isTree && (
@@ -28,6 +29,7 @@ const FileTreeComponent = ({ entries, toggleEntry }) => (
 );
 
 const mapStateToProps = (state, { path }) => {
+  //TODO memoize
   const tree = state.tree[path];
   const entries = tree ? tree.map(entryPath => state.entries[entryPath]) : [];
   return { entries };

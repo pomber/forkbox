@@ -18,7 +18,11 @@ export const toggleEntry = entry => (dispatch, getState) => {
   if (entry.isTree && !entry.loaded) {
     fetchTree(entry.path)(dispatch, getState);
   }
-  dispatch(actions.toggleEntry(entry));
+  if (entry.isTree) {
+    dispatch(actions.toggleTree(entry));
+  } else {
+    dispatch(actions.selectBlob(entry));
+  }
 };
 
 const fetchTree = path => (dispatch, getState) => {

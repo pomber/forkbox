@@ -3,17 +3,6 @@ import fluxify from "./utils/fluxify";
 export const { actions, reducer } = fluxify(
   { tree: {} },
   {
-    toggleEntry(state, entry) {
-      const path = entry.path;
-      const oldEntry = state.entries[path];
-      const newEntry = {
-        ...oldEntry,
-        collapsed: !oldEntry.collapsed,
-        loaded: true
-      };
-      const entries = { ...state.entries, [path]: newEntry };
-      return { ...state, entries: entries };
-    },
     receiveRepo(state, result) {
       const entryList = mapEntries("/", result.object.entries);
       const tree = { "/": entryList.map(e => e.path) };
@@ -32,6 +21,35 @@ export const { actions, reducer } = fluxify(
         ...entryList.map(e => ({ [e.path]: e }))
       );
       return { ...state, tree, entries: newEntries };
+    },
+    toggleTree(state, entry) {
+      const path = entry.path;
+      const oldEntry = state.entries[path];
+      const newEntry = {
+        ...oldEntry,
+        collapsed: !oldEntry.collapsed,
+        loaded: true
+      };
+      const entries = { ...state.entries, [path]: newEntry };
+      return { ...state, entries: entries };
+    },
+    selectBlob(state, entry) {
+      const path = entry.path;
+      if (state.selectedBlob === path) {
+        return state;
+      }
+      const oldSelectedBlob = state.entries[state.selectedBlob];
+      const oldUnselectedBlob = state.entries[path];
+      const newSelectedBlob = { ...oldUnselectedBlob, isSelected: true };
+      const newUnselectedBlob = { ...oldSelectedBlob, isSelected: false };
+
+      const entries = {
+        ...state.entries,
+        [newSelectedBlob.path]: newSelectedBlob,
+        [newUnselectedBlob.path]: newUnselectedBlob
+      };
+
+      return { ...state, entries, selectedBlob: path };
     }
   }
 );
