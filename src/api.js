@@ -54,3 +54,20 @@ export const getTree = ({ token, repoId, entrySha }) => gql`
     }
   }
 `;
+
+export const getBlobText = ({ token, repoId, entrySha }) => gql`
+  ${token}
+  ${{ repoId, entrySha }}
+  ${({ repository }) => repository.object.text}
+  query($repoId: ID!, $entrySha: GitObjectID!) {
+    repository: node(id: $repoId) {
+      ... on Repository {
+        object(oid: $entrySha) {
+          ... on Blob {
+            text
+          }
+        }
+      }
+    }
+  }
+`;

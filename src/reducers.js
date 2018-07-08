@@ -1,7 +1,7 @@
 import fluxify from "./utils/fluxify";
 
 export const { actions, reducer } = fluxify(
-  { tree: {} },
+  { tree: {}, texts: {}, entries: {} },
   {
     receiveRepo(state, result) {
       const entryList = mapEntries("/", result.object.entries);
@@ -50,6 +50,11 @@ export const { actions, reducer } = fluxify(
       };
 
       return { ...state, entries, selectedBlob: path };
+    },
+    receiveBlobText(state, { path, text }) {
+      const oldTexts = state.texts;
+      const newTexts = { ...oldTexts, [path]: text };
+      return { ...state, texts: newTexts };
     }
   }
 );

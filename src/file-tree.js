@@ -1,16 +1,16 @@
 import React from "react";
 import * as S from "./styles";
 import { connect } from "react-redux";
-import { toggleEntry } from "./dispatchers";
+import { selectEntry } from "./dispatchers";
 
-const FileNode = ({ entry, toggleEntry }) => (
+const FileNode = ({ entry, selectEntry }) => (
   <div>
     <S.EntryNode
       collapsed={entry.collapsed}
       name={entry.name}
       isTree={entry.isTree}
       isSelected={entry.isSelected}
-      onClick={() => toggleEntry(entry)}
+      onClick={() => selectEntry(entry)}
     />
     {entry.isTree && (
       <S.EntryChildren hide={entry.collapsed}>
@@ -20,10 +20,10 @@ const FileNode = ({ entry, toggleEntry }) => (
   </div>
 );
 
-const FileTreeComponent = ({ entries, toggleEntry }) => (
+const FileTreeComponent = ({ entries, selectEntry }) => (
   <div>
     {entries.map(entry => (
-      <FileNode entry={entry} key={entry.name} toggleEntry={toggleEntry} />
+      <FileNode entry={entry} key={entry.name} selectEntry={selectEntry} />
     ))}
   </div>
 );
@@ -36,7 +36,7 @@ const mapStateToProps = (state, { path }) => {
 };
 
 const mapDispatchToProps = {
-  toggleEntry
+  selectEntry
 };
 
 const FileTree = connect(

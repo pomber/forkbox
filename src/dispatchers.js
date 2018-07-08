@@ -14,15 +14,37 @@ export const fetchRepoIfNeeded = (owner, repoName, branch) => (
     .then(result => dispatch(actions.receiveRepo(result)));
 };
 
-export const toggleEntry = entry => (dispatch, getState) => {
-  if (entry.isTree && !entry.loaded) {
+export const selectEntry = entry => (dispatch, getState) => {
+  if (entry.isTree) {
+    selectTree(entry)(dispatch, getState);
+  } else {
+    selectBlob(entry)(dispatch, getState);
+  }
+};
+
+const selectBlob = entry => (dispatch, getState) => {
+  if (!entry.loaded) {
+    fetchBlob(entry.path)(dispatch, getState);
+  }
+  dispatch(actions.selectBlob(entry));
+};
+
+const fetchBlob = path => (dispatch, getState) => {
+  const state = getState();
+  const repoId = state.repoId;
+  const entrySha = state.entries[path].sha;
+  //TODO auth dance
+  const token = localStorage["gh-token"];
+  return api
+    .getBlobText({ token, repoId, entrySha })
+    .then(text => dispatch(actions.receiveBlobText({ path, text })));
+};
+
+const selectTree = entry => (dispatch, getState) => {
+  if (!entry.loaded) {
     fetchTree(entry.path)(dispatch, getState);
   }
-  if (entry.isTree) {
-    dispatch(actions.toggleTree(entry));
-  } else {
-    dispatch(actions.selectBlob(entry));
-  }
+  dispatch(actions.toggleTree(entry));
 };
 
 const fetchTree = path => (dispatch, getState) => {
