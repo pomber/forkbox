@@ -10,7 +10,12 @@ export const { actions, reducer } = fluxify(
         {},
         ...entryList.map(e => ({ [e.path]: e }))
       );
-      return { ...state, tree, entries, repoId: result.id };
+      const dockerfileEntry = result.config.entries.find(
+        e => e.name === "dev.dockerfile"
+      );
+      const dockerfile = dockerfileEntry && dockerfileEntry.object.text;
+      console.log(dockerfile);
+      return { ...state, tree, entries, repoId: result.id, dockerfile };
     },
     receiveTree(state, { path, entries }) {
       const entryList = mapEntries(path, entries);
@@ -57,7 +62,6 @@ export const { actions, reducer } = fluxify(
       return { ...state, texts: newTexts };
     },
     editText(state, { path, text }) {
-      console.log(path, text);
       const oldTexts = state.texts;
       const newTexts = { ...oldTexts, [path]: text };
       const newEntries = updateEntry(state, path, { isDirty: true });

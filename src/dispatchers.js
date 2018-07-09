@@ -60,7 +60,6 @@ const fetchTree = path => (dispatch, getState) => {
   const state = getState();
   const repoId = state.repoId;
   const entrySha = state.entries[path].sha;
-  //TODO auth dance
   const token = localStorage["gh-token"];
   return api
     .getTree({ token, repoId, entrySha })

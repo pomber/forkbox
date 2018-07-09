@@ -9,13 +9,35 @@ export const getGhToken = code =>
 
 export const getRepo = ({ token, owner, repoName, branch }) => gql`
   ${token}
-  ${{ owner, repoName, branchExpression: branch + ":" }}
+  ${{
+    owner,
+    repoName,
+    branchExpression: branch + ":",
+    configExpression: branch + ":.forkbox"
+  }}
   ${({ owner }) => owner.repository}
-  query($owner: String!, $repoName: String!, $branchExpression: String!) {
+  query(
+    $owner: String!
+    $repoName: String!
+    $branchExpression: String!
+    $configExpression: String!
+  ) {
     owner: repositoryOwner(login: $owner) {
       repository(name: $repoName) {
         id
         url
+        config: object(expression: $configExpression) {
+          ... on Tree {
+            entries {
+              name
+              object {
+                ... on Blob {
+                  text
+                }
+              }
+            }
+          }
+        }
         object(expression: $branchExpression) {
           sha: oid
           ... on Tree {
