@@ -9,6 +9,7 @@ const FileNode = ({ entry, selectEntry }) => (
       collapsed={entry.collapsed}
       name={entry.name}
       isTree={entry.isTree}
+      isDirty={entry.isDirty}
       isSelected={entry.isSelected}
       onClick={() => selectEntry(entry)}
     />

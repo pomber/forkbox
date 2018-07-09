@@ -66,3 +66,10 @@ const fetchTree = path => (dispatch, getState) => {
     .getTree({ token, repoId, entrySha })
     .then(result => dispatch(actions.receiveTree({ path, entries: result })));
 };
+
+export const editText = text => (dispatch, getState) => {
+  const path = getState().selectedBlob;
+  if (path) {
+    dispatch(actions.editText({ path, text }));
+  }
+};

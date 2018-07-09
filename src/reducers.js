@@ -55,11 +55,24 @@ export const { actions, reducer } = fluxify(
       const oldTexts = state.texts;
       const newTexts = { ...oldTexts, [path]: text };
       return { ...state, texts: newTexts };
+    },
+    editText(state, { path, text }) {
+      console.log(path, text);
+      const oldTexts = state.texts;
+      const newTexts = { ...oldTexts, [path]: text };
+      const newEntries = updateEntry(state, path, { isDirty: true });
+      return { ...state, texts: newTexts, entries: newEntries };
     }
   }
 );
 
 // Utils
+
+const updateEntry = (state, path, change) => {
+  const oldEntry = state.entries[path];
+  const newEntry = { ...oldEntry, ...change };
+  return { ...state.entries, [path]: newEntry };
+};
 
 const entryValue = e => (e.isTree ? "0" + e.name : "1" + e.name);
 const entryComparer = (a, b) => entryValue(a).localeCompare(entryValue(b));

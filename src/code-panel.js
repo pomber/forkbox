@@ -3,6 +3,7 @@ import MonacoEditor from "react-monaco-editor";
 import * as S from "./styles";
 import { connect } from "react-redux";
 import getLanguage from "./utils/language-detector";
+import { editText } from "./dispatchers";
 
 const options = {
   minimap: { enabled: false },
@@ -30,7 +31,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = {};
+const mapDispatchToProps = {
+  onChange: editText
+};
 
 export default connect(
   mapStateToProps,
