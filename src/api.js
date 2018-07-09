@@ -1,5 +1,12 @@
 import gql from "./utils/gql";
 
+export const getGhToken = code =>
+  fetch("/.netlify/functions/gh-token?code=" + code)
+    .then(r => r.json())
+    .then(({ access_token }) => {
+      return access_token;
+    });
+
 export const getRepo = ({ token, owner, repoName, branch }) => gql`
   ${token}
   ${{ owner, repoName, branchExpression: branch + ":" }}

@@ -4,19 +4,12 @@ import FilePanel from "./file-panel";
 import CodePanel from "./code-panel";
 import { connect } from "react-redux";
 import * as api from "./api";
-import { fetchRepoIfNeeded } from "./dispatchers";
+import { initBox } from "./dispatchers";
 
 class App extends React.Component {
   componentDidMount() {
-    const {
-      owner,
-      repoName,
-      baseBranch,
-      ghCode,
-      fetchRepoIfNeeded
-    } = this.props;
-    //TODO change to initBox
-    fetchRepoIfNeeded(owner, repoName, baseBranch);
+    const { owner, repoName, baseBranch, ghCode, initBox } = this.props;
+    initBox(owner, repoName, baseBranch, ghCode);
   }
   render() {
     return (
@@ -32,7 +25,7 @@ class App extends React.Component {
 const mapStateToProps = (state, {}) => ({});
 
 const mapDispatchToProps = {
-  fetchRepoIfNeeded
+  initBox
 };
 
 export default connect(

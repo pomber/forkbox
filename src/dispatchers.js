@@ -1,17 +1,27 @@
 import * as api from "./api";
 import { actions } from "./reducers";
+import router from "./router";
 
-export const fetchRepoIfNeeded = (owner, repoName, branch) => (
+export const initBox = (owner, repoName, branch, ghCode) => async (
   dispatch,
   getState
 ) => {
   const { repoId } = getState();
   if (repoId) return;
-  //TODO auth dance
-  const token = localStorage["gh-token"];
-  return api
-    .getRepo({ token, owner, repoName, branch })
-    .then(result => dispatch(actions.receiveRepo(result)));
+  let token = localStorage["gh-token"];
+
+  if (!token && !ghCode) {
+    router.redirectToGhAuth();
+  }
+
+  if (!token) {
+    token = await api.getGhToken(ghCode);
+    localStorage["gh-token"] = token;
+  }
+
+  const result = await api.getRepo({ token, owner, repoName, branch });
+
+  dispatch(actions.receiveRepo(result));
 };
 
 export const selectEntry = entry => (dispatch, getState) => {
@@ -33,7 +43,6 @@ const fetchBlob = path => (dispatch, getState) => {
   const state = getState();
   const repoId = state.repoId;
   const entrySha = state.entries[path].sha;
-  //TODO auth dance
   const token = localStorage["gh-token"];
   return api
     .getBlobText({ token, repoId, entrySha })
