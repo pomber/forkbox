@@ -4,16 +4,23 @@ import { injectGlobalStyle } from "./styles";
 import "./primer.css";
 import App from "./app";
 import StoreProvider from "./store-provider";
+import router from "./router";
 
 injectGlobalStyle();
 
-//TODO get props from url
+let result = router.parseUrl();
+console.log(result);
+const { repoOwner, repoName, baseBranch, ghCode } = result;
+
+router.rewriteUrl();
+
 ReactDOM.render(
   <StoreProvider>
     <App
-      owner="forkboxlabs"
-      repoName="react-storybook-demo"
-      baseBranch="master"
+      owner={repoOwner}
+      repoName={repoName}
+      baseBranch={baseBranch}
+      ghCode={ghCode}
     />
   </StoreProvider>,
   document.getElementById("root")

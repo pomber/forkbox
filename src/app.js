@@ -6,19 +6,24 @@ import { connect } from "react-redux";
 import * as api from "./api";
 import { fetchRepoIfNeeded } from "./dispatchers";
 
-const TerminalPanel = () => <S.TerminalPanel>Terminal</S.TerminalPanel>;
-
 class App extends React.Component {
   componentDidMount() {
-    const { owner, repoName, baseBranch } = this.props;
-    this.props.fetchRepoIfNeeded(owner, repoName, baseBranch);
+    const {
+      owner,
+      repoName,
+      baseBranch,
+      ghCode,
+      fetchRepoIfNeeded
+    } = this.props;
+    //TODO change to initBox
+    fetchRepoIfNeeded(owner, repoName, baseBranch);
   }
   render() {
     return (
       <S.Box>
         <FilePanel />
         <CodePanel text="//foo" />
-        <TerminalPanel />
+        <S.TerminalPanel>Terminal</S.TerminalPanel>
       </S.Box>
     );
   }
