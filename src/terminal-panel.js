@@ -1,12 +1,20 @@
 import React from "react";
 import * as S from "./styles";
 import { connect } from "react-redux";
-import { connectWithZeit, deploy } from "./dispatchers";
+import { connectWithZeit, deploy, stopDeployment } from "./dispatchers";
 
-const TerminalPanel = ({ isReady, url, connectWithZeit, deploy }) => (
+const TerminalPanel = ({
+  isReady,
+  url,
+  connectWithZeit,
+  deploy,
+  stopDeployment
+}) => (
   <S.TerminalPanel>
     {isReady ? (
-      <S.Iframe src={url} />
+      <S.IframeContainer onClose={stopDeployment}>
+        <S.Iframe src={url} />
+      </S.IframeContainer>
     ) : (
       <React.Fragment>
         <S.Button onClick={connectWithZeit}>Connect with Zeit</S.Button>
@@ -28,7 +36,8 @@ const mapStateToProps = (state, {}) => {
 
 const mapDispatchToProps = {
   connectWithZeit,
-  deploy
+  deploy,
+  stopDeployment
 };
 
 export default connect(

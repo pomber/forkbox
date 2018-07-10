@@ -93,6 +93,10 @@ export const deploy = () => async (dispatch, getState) => {
     deploymentState = update.state;
     updateDeployment(deployment, deploymentState, dispatch);
   }
+  if (deployment.isError) {
+    throw new Error(deployment);
+  }
+
   return;
 };
 
@@ -105,6 +109,15 @@ const updateDeployment = (deployment, deploymentState, dispatch) => {
     deploymentState
   );
   dispatch(actions.receiveDeployment(deployment));
+};
+
+export const stopDeployment = () => async (dispatch, getState) => {
+  console.log("stop deployment");
+  const token = localStorage["zeit-token"];
+  const { deploymentId } = getState().deployment;
+  dispatch(actions.receiveDeployment({}));
+  const result = await api.stopZeitDeployment({ token, deploymentId });
+  console.log("stop", result);
 };
 
 // utils

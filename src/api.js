@@ -158,7 +158,7 @@ export const getZeitDeployment = async ({ deploymentId }) => {
 
 export const stopZeitDeployment = async ({ token, deploymentId }) => {
   const response = await fetch(
-    `/v1/now/deployments/${deploymentId}/instances`,
+    `https://api.zeit.co/v1/now/deployments/${deploymentId}/instances`,
     {
       method: "post",
       body: JSON.stringify({ min: 0, max: 0 }),

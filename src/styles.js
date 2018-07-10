@@ -266,3 +266,26 @@ export const Iframe = styled.iframe`
   padding-left: 14px;
   box-sizing: borderBox;
 `;
+
+export const IframeContainer = ({ onClose, children }) => (
+  <div
+    css={`
+      position: relative;
+      width: 100%;
+      height: 100%;
+    `}
+  >
+    <div
+      css={`
+        position: absolute;
+        right: 10px;
+        top: 10px;
+      `}
+    >
+      <Button transparent onClick={onClose}>
+        Close
+      </Button>
+    </div>
+    {children}
+  </div>
+);
