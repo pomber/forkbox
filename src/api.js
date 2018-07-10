@@ -7,6 +7,13 @@ export const getGhToken = code =>
       return access_token;
     });
 
+export const getZeitToken = code =>
+  fetch("/.netlify/functions/zeit-token?code=" + code)
+    .then(r => r.json())
+    .then(({ access_token }) => {
+      return access_token;
+    });
+
 export const getRepo = ({ token, owner, repoName, branch }) => gql`
   ${token}
   ${{

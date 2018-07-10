@@ -75,6 +75,9 @@ export const { actions, reducer } = fluxify(
       const newEntries = updateEntry(state, path, { isDirty: true });
       return { ...state, texts: newTexts, entries: newEntries };
     },
+    connectingToZeit(state) {
+      return { ...state, isConnectingZeit: true };
+    },
     receiveDeployment(state, deployment) {
       return { ...state, deployment };
     }

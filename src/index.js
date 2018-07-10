@@ -10,7 +10,7 @@ injectGlobalStyle();
 
 let result = router.parseUrl();
 console.log(result);
-const { repoOwner, repoName, baseBranch, ghCode } = result;
+const { repoOwner, repoName, baseBranch, ghCode, zeitCode } = result;
 
 router.rewriteUrl();
 
@@ -21,6 +21,7 @@ ReactDOM.render(
       repoName={repoName}
       baseBranch={baseBranch}
       ghCode={ghCode}
+      zeitCode={zeitCode}
     />
   </StoreProvider>,
   document.getElementById("root")

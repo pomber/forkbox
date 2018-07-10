@@ -8,8 +8,15 @@ import { initBox } from "./dispatchers";
 
 class App extends React.Component {
   componentDidMount() {
-    const { owner, repoName, baseBranch, ghCode, initBox } = this.props;
-    initBox(owner, repoName, baseBranch, ghCode);
+    const {
+      owner,
+      repoName,
+      baseBranch,
+      ghCode,
+      zeitCode,
+      initBox
+    } = this.props;
+    initBox(owner, repoName, baseBranch, ghCode, zeitCode);
   }
   render() {
     return (

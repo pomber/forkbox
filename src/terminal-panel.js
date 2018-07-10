@@ -6,6 +6,7 @@ import { connectWithZeit, deploy, stopDeployment } from "./dispatchers";
 const TerminalPanel = ({
   isReady,
   url,
+  isConnectedToZeit,
   connectWithZeit,
   deploy,
   stopDeployment
@@ -17,19 +18,27 @@ const TerminalPanel = ({
       </S.IframeContainer>
     ) : (
       <React.Fragment>
-        <S.Button onClick={connectWithZeit}>Connect with Zeit</S.Button>
-        <S.Button onClick={deploy}>Launch Terminal</S.Button>
+        {!isConnectedToZeit && (
+          <S.Button onClick={connectWithZeit}>Connect with Zeit</S.Button>
+        )}
+        <S.Button onClick={deploy} disabled={!isConnectedToZeit}>
+          Launch Terminal
+        </S.Button>
       </React.Fragment>
     )}
   </S.TerminalPanel>
 );
 
 const mapStateToProps = (state, {}) => {
+  console.log("mapStateToProps");
   const { isLoading, isError, isReady, url } = state.deployment;
+  const isConnectedToZeit =
+    !!localStorage["zeit-token"] || state.isConnectingZeit;
   return {
     isLoading,
     isError,
     isReady,
+    isConnectedToZeit,
     url: url && "https://" + url
   };
 };

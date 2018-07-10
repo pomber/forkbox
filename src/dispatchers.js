@@ -2,7 +2,7 @@ import * as api from "./api";
 import { actions } from "./reducers";
 import router from "./router";
 
-export const initBox = (owner, repoName, branch, ghCode) => async (
+export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
   dispatch,
   getState
 ) => {
@@ -17,6 +17,14 @@ export const initBox = (owner, repoName, branch, ghCode) => async (
   if (!token) {
     token = await api.getGhToken(ghCode);
     localStorage["gh-token"] = token;
+  }
+
+  console.log(zeitCode);
+  if (!localStorage["zeit-token"] && zeitCode) {
+    dispatch(actions.connectingToZeit());
+    api
+      .getZeitToken(zeitCode)
+      .then(zeitToken => (localStorage["zeit-token"] = zeitToken));
   }
 
   const result = await api.getRepo({ token, owner, repoName, branch });
@@ -73,8 +81,8 @@ export const editText = text => (dispatch, getState) => {
   }
 };
 
-export const connectWithZeit = () => async (dispatch, getState) => {
-  //await deploy()(dispatch, getState);
+export const connectWithZeit = () => (dispatch, getState) => {
+  router.redirectToZeitAuth();
 };
 
 export const deploy = () => async (dispatch, getState) => {
