@@ -72,3 +72,41 @@ export const editText = text => (dispatch, getState) => {
     dispatch(actions.editText({ path, text }));
   }
 };
+
+export const connectWithZeit = () => async (dispatch, getState) => {
+  //await deploy()(dispatch, getState);
+};
+
+export const deploy = () => async (dispatch, getState) => {
+  const { dockerfile, repoName, repoUrl } = getState();
+  const token = localStorage["zeit-token"];
+  const deployment = await api.deployToZeit({ token, dockerfile, repoName });
+  console.log("deploy", deployment);
+  let deploymentState = deployment.readyState;
+  updateDeployment(deployment, deploymentState, dispatch);
+  while (deployment.isLoading) {
+    await wait(500);
+    let update = await api.getZeitDeployment({
+      deploymentId: deployment.deploymentId
+    });
+    console.log("update", deployment);
+    deploymentState = update.state;
+    updateDeployment(deployment, deploymentState, dispatch);
+  }
+  return;
+};
+
+const updateDeployment = (deployment, deploymentState, dispatch) => {
+  deployment.isLoading = ["DEPLOYING", "BOOTED", "BUILDING"].includes(
+    deploymentState
+  );
+  deployment.isReady = ["READY", "FROZEN"].includes(deploymentState);
+  deployment.isError = ["BUILD_ERROR", "DEPLOYMENT_ERROR"].includes(
+    deploymentState
+  );
+  dispatch(actions.receiveDeployment(deployment));
+};
+
+// utils
+
+const wait = ms => new Promise(resolve => setTimeout(resolve, ms));

@@ -2,8 +2,8 @@ import React from "react";
 import * as S from "./styles";
 import FilePanel from "./file-panel";
 import CodePanel from "./code-panel";
+import TerminalPanel from "./terminal-panel";
 import { connect } from "react-redux";
-import * as api from "./api";
 import { initBox } from "./dispatchers";
 
 class App extends React.Component {
@@ -16,7 +16,7 @@ class App extends React.Component {
       <S.Box>
         <FilePanel />
         <CodePanel text="//foo" />
-        <S.TerminalPanel>Terminal</S.TerminalPanel>
+        <TerminalPanel />
       </S.Box>
     );
   }

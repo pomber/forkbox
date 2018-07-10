@@ -257,3 +257,12 @@ export const Step = ({ label, current, done }) => (
     <span>{current ? "..." : ""}</span>
   </div>
 );
+
+export const Iframe = styled.iframe`
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding-top: 14px;
+  padding-left: 14px;
+  box-sizing: borderBox;
+`;

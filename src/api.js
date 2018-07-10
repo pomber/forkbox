@@ -25,6 +25,7 @@ export const getRepo = ({ token, owner, repoName, branch }) => gql`
     owner: repositoryOwner(login: $owner) {
       repository(name: $repoName) {
         id
+        name
         url
         config: object(expression: $configExpression) {
           ... on Tree {
@@ -100,3 +101,71 @@ export const getBlobText = ({ token, repoId, entrySha }) => gql`
     }
   }
 `;
+
+export const deployToZeit = async ({
+  token,
+  dockerfile,
+  repoName,
+  repoUrl,
+  boxBranch
+}) => {
+  const body = {
+    public: true,
+    name: "forkbox-" + repoName,
+    deploymentType: "DOCKER",
+    files: [{ file: "Dockerfile", data: dockerfile }],
+    config: {
+      scale: {
+        sfo1: {
+          min: 0,
+          max: 1 // Should be 0 but Now doesn't support it
+        }
+      },
+      build: {
+        env: {
+          REPO_URL: repoUrl, //TODO set forked repoUrl
+          BRANCH_NAME: "master" //TODO set boxBranch
+        }
+      }
+    }
+  };
+  const response = await fetch("https://api.zeit.co/v3/now/deployments", {
+    method: "post",
+    body: JSON.stringify(body),
+    headers: new Headers({
+      authorization: "Bearer " + token
+    })
+  });
+
+  const data = await response.json();
+  // {
+  //   deploymentId: "afewf",
+  //   readyState: "INITIALIZING", // "READY" if it was cached
+  //   scale: {},
+  //   url: "forkbox-react-storybook-demo-eemudfqtcb.now.sh",
+  //   warnings: []
+  // };
+
+  return data;
+};
+
+export const getZeitDeployment = async ({ deploymentId }) => {
+  const response = fetch(
+    "https://api.zeit.co/v2/now/deployments/" + deploymentId
+  );
+  console.log(response);
+};
+
+export const stopZeitDeployment = async ({ token, deploymentId }) => {
+  const response = await fetch(
+    `/v1/now/deployments/${deploymentId}/instances`,
+    {
+      method: "post",
+      body: JSON.stringify({ min: 0, max: 0 }),
+      headers: new Headers({
+        authorization: "Bearer " + token
+      })
+    }
+  );
+  console.log("stop", response);
+};
