@@ -30,7 +30,6 @@ const TerminalPanel = ({
 );
 
 const mapStateToProps = (state, {}) => {
-  console.log("mapStateToProps");
   const { isLoading, isError, isReady, url } = state.deployment;
   const isConnectedToZeit =
     !!localStorage["zeit-token"] || state.isConnectingZeit;

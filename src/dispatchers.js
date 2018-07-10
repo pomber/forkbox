@@ -93,6 +93,7 @@ export const deploy = () => async (dispatch, getState) => {
   let deploymentState = deployment.readyState;
   updateDeployment(deployment, deploymentState, dispatch);
   while (deployment.isLoading) {
+    //TODO I think this doesn't work
     await wait(500);
     let update = await api.getZeitDeployment({
       deploymentId: deployment.deploymentId
