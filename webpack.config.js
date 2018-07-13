@@ -6,7 +6,7 @@ const MonacoWebpackPlugin = require("monaco-editor-webpack-plugin");
 const DotenvPlugin = require("dotenv-webpack");
 const webpack = require("webpack");
 
-module.exports = {
+module.exports = (env, argv) => ({
   entry: { main: "./src/index.js" },
   output: {
     path: path.resolve(__dirname, "dist-static"),
@@ -45,7 +45,9 @@ module.exports = {
       filename: "index.html"
     }),
     new WebpackMd5Hash(),
-    new MonacoWebpackPlugin(),
+    new MonacoWebpackPlugin(
+      argv.mode === "production" ? {} : { languages: ["json"] }
+    ),
     new DotenvPlugin({
       systemvars: true
     }),
@@ -72,4 +74,4 @@ module.exports = {
     fs: "empty",
     module: "empty"
   }
-};
+});
