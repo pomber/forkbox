@@ -164,15 +164,16 @@ export const getZeitDeployment = async ({ deploymentId }) => {
 };
 
 export const stopZeitDeployment = async ({ token, deploymentId }) => {
-  const response = await fetch(
-    `https://api.zeit.co/v1/now/deployments/${deploymentId}/instances`,
-    {
-      method: "post",
-      body: JSON.stringify({ min: 0, max: 0 }),
-      headers: new Headers({
-        authorization: "Bearer " + token
-      })
-    }
-  );
-  console.log("stop", response);
+  // TODO we want to stop the instance, not scale the deployment to 0
+  // const response = await fetch(
+  //   `https://api.zeit.co/v1/now/deployments/${deploymentId}/instances`,
+  //   {
+  //     method: "post",
+  //     body: JSON.stringify({ min: 0, max: 0 }),
+  //     headers: new Headers({
+  //       authorization: "Bearer " + token
+  //     })
+  //   }
+  // );
+  // console.log("stop", response);
 };
