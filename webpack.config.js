@@ -45,9 +45,7 @@ module.exports = (env, argv) => ({
       filename: "index.html"
     }),
     new WebpackMd5Hash(),
-    new MonacoWebpackPlugin(
-      argv.mode === "production" ? {} : { languages: ["json"] }
-    ),
+    new MonacoWebpackPlugin(argv.mode === "production" ? {} : {}),
     new DotenvPlugin({
       systemvars: true
     }),
