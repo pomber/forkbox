@@ -33,7 +33,7 @@ export const { actions, reducer } = fluxify(
     selectBlob(state, { path }) {
       if (state.selectedBlob === path) return;
 
-      if (state.selectBlob) {
+      if (state.selectedBlob) {
         state.entries[state.selectedBlob].isSelected = false;
       }
       state.entries[path].isSelected = true;
