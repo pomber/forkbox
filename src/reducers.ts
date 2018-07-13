@@ -1,9 +1,26 @@
 import fluxify from "./utils/fluxify";
 
+type Path = string;
+type Sha = string;
+type Entry = object;
+
+interface State {
+  repoId: string;
+  repoName: string;
+  repoUrl: string;
+  dockerfile: string;
+  selectedBlob: Path;
+  isConnectingZeit: boolean;
+  deployment: string;
+  tree: object;
+  entries: object;
+  texts: object;
+}
+
 export const { actions, reducer } = fluxify(
   { tree: {}, texts: {}, entries: {}, deployment: {} },
   {
-    receiveRepo(state, { object, config, id, name, url }) {
+    receiveRepo(state: State, { object, config, id, name, url }) {
       const entryList = mapEntries("/", object.entries);
       const dockerfileEntry = config.entries.find(
         e => e.name === "dev.dockerfile"
@@ -18,19 +35,19 @@ export const { actions, reducer } = fluxify(
         state.entries[entry.path] = entry;
       }
     },
-    receiveTree(state, { path, entries }) {
+    receiveTree(state: State, { path, entries }) {
       const entryList = mapEntries(path, entries);
       state.tree[path] = entryList.map(e => e.path);
       for (const entry of entryList) {
         state.entries[entry.path] = entry;
       }
     },
-    toggleTree(state, { path }) {
+    toggleTree(state: State, { path }) {
       const entry = state.entries[path];
       entry.collapsed = !entry.collapsed;
       entry.loaded = true;
     },
-    selectBlob(state, { path }) {
+    selectBlob(state: State, { path }) {
       if (state.selectedBlob === path) return;
 
       if (state.selectedBlob) {
@@ -39,17 +56,17 @@ export const { actions, reducer } = fluxify(
       state.entries[path].isSelected = true;
       state.selectedBlob = path;
     },
-    receiveBlobText(state, { path, text }) {
+    receiveBlobText(state: State, { path, text }) {
       state.texts[path] = text;
     },
-    editText(state, { path, text }) {
+    editText(state: State, { path, text }) {
       state.texts[path] = text;
       state.entries[path].isDirty = true;
     },
-    connectingToZeit(state) {
+    connectingToZeit(state: State) {
       state.isConnectingZeit = true;
     },
-    receiveDeployment(state, deployment) {
+    receiveDeployment(state: State, deployment) {
       state.deployment = deployment;
     }
   }
