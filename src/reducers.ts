@@ -2,75 +2,83 @@ import fluxify from "./utils/fluxify";
 
 type Path = string;
 type Sha = string;
-type Entry = object;
 
-interface State {
-  repoId: string;
-  repoName: string;
-  repoUrl: string;
-  dockerfile: string;
-  selectedBlob: Path;
-  isConnectingZeit: boolean;
-  deployment: string;
-  tree: object;
-  entries: object;
-  texts: object;
+interface Entry {
+  path: string;
+  name: string;
+  sha: Sha;
+  isDirty: boolean;
+  collapsed: boolean;
+  loaded: boolean;
+  isSelected: boolean;
 }
 
-export const { actions, reducer } = fluxify(
-  { tree: {}, texts: {}, entries: {}, deployment: {} },
-  {
-    receiveRepo(state: State, { object, config, id, name, url }) {
-      const entryList = mapEntries("/", object.entries);
-      const dockerfileEntry = config.entries.find(
-        e => e.name === "dev.dockerfile"
-      );
+interface State {
+  repoId?: string;
+  repoName?: string;
+  repoUrl?: string;
+  dockerfile?: string;
+  selectedBlob?: Path;
+  isConnectingZeit?: boolean;
+  deployment: object;
+  tree: { [x: string]: string[] };
+  entries: { [x: string]: Entry };
+  texts: { [x: string]: string };
+}
 
-      state.repoId = id;
-      state.repoName = name;
-      state.repoUrl = url;
-      state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
-      state.tree["/"] = entryList.map(e => e.path);
-      for (const entry of entryList) {
-        state.entries[entry.path] = entry;
-      }
-    },
-    receiveTree(state: State, { path, entries }) {
-      const entryList = mapEntries(path, entries);
-      state.tree[path] = entryList.map(e => e.path);
-      for (const entry of entryList) {
-        state.entries[entry.path] = entry;
-      }
-    },
-    toggleTree(state: State, { path }) {
-      const entry = state.entries[path];
-      entry.collapsed = !entry.collapsed;
-      entry.loaded = true;
-    },
-    selectBlob(state: State, { path }) {
-      if (state.selectedBlob === path) return;
+let initialState: State = { tree: {}, texts: {}, entries: {}, deployment: {} };
 
-      if (state.selectedBlob) {
-        state.entries[state.selectedBlob].isSelected = false;
-      }
-      state.entries[path].isSelected = true;
-      state.selectedBlob = path;
-    },
-    receiveBlobText(state: State, { path, text }) {
-      state.texts[path] = text;
-    },
-    editText(state: State, { path, text }) {
-      state.texts[path] = text;
-      state.entries[path].isDirty = true;
-    },
-    connectingToZeit(state: State) {
-      state.isConnectingZeit = true;
-    },
-    receiveDeployment(state: State, deployment) {
-      state.deployment = deployment;
+export const { actions, reducer } = fluxify(initialState, {
+  receiveRepo(state, { object, config, id, name, url }) {
+    const entryList = mapEntries("/", object.entries);
+    const dockerfileEntry = config.entries.find(
+      e => e.name === "dev.dockerfile"
+    );
+
+    state.repoId = id;
+    state.repoName = name;
+    state.repoUrl = url;
+    state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
+    state.tree["/"] = entryList.map(e => e.path);
+    for (const entry of entryList) {
+      state.entries[entry.path] = entry;
     }
+  },
+  receiveTree(state, { path, entries }) {
+    const entryList = mapEntries(path, entries);
+    state.tree[path] = entryList.map(e => e.path);
+    for (const entry of entryList) {
+      state.entries[entry.path] = entry;
+    }
+  },
+  toggleTree(state, { path }) {
+    const entry = state.entries[path];
+    entry.collapsed = !entry.collapsed;
+    entry.loaded = true;
+  },
+  selectBlob(state, { path }) {
+    if (state.selectedBlob === path) return;
+
+    if (state.selectedBlob) {
+      state.entries[state.selectedBlob].isSelected = false;
+    }
+    state.entries[path].isSelected = true;
+    state.selectedBlob = path;
+  },
+  receiveBlobText(state, { path, text }) {
+    state.texts[path] = text;
+  },
+  editText(state, { path, text }) {
+    state.texts[path] = text;
+    state.entries[path].isDirty = true;
+  },
+  connectingToZeit(state) {
+    state.isConnectingZeit = true;
+  },
+  receiveDeployment(state, deployment: object) {
+    state.deployment = deployment;
   }
-);
+});
 
 // Utils
 
