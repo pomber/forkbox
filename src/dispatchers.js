@@ -1,6 +1,7 @@
 import * as api from "./api";
 import { actions } from "./reducers";
 import router from "./router";
+import { killInstances } from "./now-api";
 
 export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
   dispatch,
@@ -125,8 +126,9 @@ export const stopDeployment = () => async (dispatch, getState) => {
   const token = localStorage["zeit-token"];
   const { deploymentId } = getState().deployment;
   dispatch(actions.receiveDeployment({}));
-  const result = await api.stopZeitDeployment({ token, deploymentId });
-  console.log("stop", result);
+  // const result = await api.stopZeitDeployment({ token, deploymentId });
+  await killInstances(token, deploymentId);
+  console.log("stopped");
 };
 
 // utils
