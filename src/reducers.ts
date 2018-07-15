@@ -26,6 +26,7 @@ interface State {
   baseBranchSha?: string;
 
   forkedRepoId?: string;
+  forkedRepoUrl?: string;
   forkedRepoOwner?: string;
   boxBranchName?: string;
 
@@ -71,9 +72,10 @@ export const { actions, reducer } = fluxify(initialState, {
       state.entries[entry.path] = entry;
     }
   },
-  receiveForkedRepo(state, { repoId, repoOwner }) {
+  receiveForkedRepo(state, { repoId, repoOwner, repoUrl }) {
     state.forkedRepoId = repoId;
     state.forkedRepoOwner = repoOwner;
+    state.forkedRepoUrl = repoUrl;
   },
   receiveBoxBranch(state, boxBranchName: string) {
     state.boxBranchName = boxBranchName;

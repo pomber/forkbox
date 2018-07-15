@@ -90,7 +90,13 @@ export const connectWithZeit = () => (dispatch, getState) => {
 };
 
 export const deploy = commandName => async (dispatch, getState) => {
-  const { dockerfile, repoName, config, forkedRepoUrl } = getState();
+  const {
+    dockerfile,
+    repoName,
+    config,
+    forkedRepoUrl,
+    boxBranchName
+  } = getState();
   const token = localStorage["zeit-token"];
   const env = config.commands.find(c => c.name === commandName).env;
   const deployment = await api.deployToZeit({
@@ -98,7 +104,7 @@ export const deploy = commandName => async (dispatch, getState) => {
     dockerfile,
     repoName,
     repoUrl: forkedRepoUrl,
-    boxBranch: "master", //TODO set boxBranch
+    boxBranch: boxBranchName,
     env
   });
   console.log("deploy", deployment);

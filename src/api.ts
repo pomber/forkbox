@@ -123,6 +123,7 @@ export const getBlobText = ({ token, repoId, entrySha }) => gql`
 export const forkRepo = async ({ token, owner, repoName }) => {
   const forkedRepo = await fetchData<{
     node_id: string;
+    html_url: string;
     owner: { login: string };
   }>(`https://api.github.com/repos/${owner}/${repoName}/forks`, {
     method: "post",
@@ -133,6 +134,7 @@ export const forkRepo = async ({ token, owner, repoName }) => {
   console.log("fork", forkedRepo);
   return {
     repoId: forkedRepo.node_id,
+    repoUrl: forkedRepo.html_url,
     repoOwner: forkedRepo.owner.login
   };
 };
