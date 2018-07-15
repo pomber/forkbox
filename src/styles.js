@@ -110,6 +110,19 @@ export const Button = ({ large, transparent, children, ...rest }) => (
   </button>
 );
 
+export const Center = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  & > * {
+    margin: 4px;
+    width: 60%;
+    max-width: 300px;
+  }
+`;
+
 export const Picker = styled.div`
   display: flex;
   flex-flow: wrap;

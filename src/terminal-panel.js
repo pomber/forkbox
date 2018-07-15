@@ -18,7 +18,7 @@ const TerminalPanel = ({
         <S.Iframe src={url} />
       </S.IframeContainer>
     ) : (
-      <React.Fragment>
+      <S.Center>
         {!isConnectedToZeit && (
           <S.Button onClick={connectWithZeit}>Connect with Zeit</S.Button>
         )}
@@ -31,7 +31,7 @@ const TerminalPanel = ({
             {commandName}
           </S.Button>
         ))}
-      </React.Fragment>
+      </S.Center>
     )}
   </S.TerminalPanel>
 );
