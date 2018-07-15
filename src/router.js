@@ -5,8 +5,6 @@ const ghPath = pathToRegexp("/gh-callback/f/:repoOwner/:repoName/:branch*");
 const zeitPath = pathToRegexp("/zeit-callback/");
 const ghRewrite = pathToRegexp("/gh-callback/:path*");
 
-//http://localhost:3000/zeit-callback/?code=PTQX0SCtHUwoA6ZzyKTTcInA&state=%2Ff%2Fforkboxlabs%2Freact-storybook-demo
-
 export default {
   parseUrl() {
     let { pathname } = location;
@@ -44,6 +42,10 @@ export default {
         window.history.replaceState(null, null, "/" + newPath);
       }
     }
+  },
+  rewriteBoxUrl(owner, repoName, branch) {
+    const newPath = `/x/${owner}/${repoName}/${branch}`;
+    window.history.replaceState(null, null, newPath);
   },
   redirectToGhAuth() {
     location.href = `https://github.com/login/oauth/authorize?scope=public_repo&client_id=${

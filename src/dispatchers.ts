@@ -34,6 +34,8 @@ export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
 
   await forkRepo()(dispatch, getState);
   await createBoxBranch()(dispatch, getState);
+  const { forkedRepoOwner, boxBranchName } = getState();
+  router.rewriteBoxUrl(forkedRepoOwner, repoName, boxBranchName);
 };
 
 export const selectEntry = entry => (dispatch, getState) => {
