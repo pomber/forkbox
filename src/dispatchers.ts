@@ -22,7 +22,7 @@ export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
 
   console.log(zeitCode);
   if (!localStorage["zeit-token"] && zeitCode) {
-    dispatch(actions.connectingToZeit({}));
+    dispatch(actions.connectingToZeit());
     api
       .getZeitToken(zeitCode)
       .then(zeitToken => (localStorage["zeit-token"] = zeitToken));

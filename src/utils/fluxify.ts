@@ -1,21 +1,20 @@
 import produce from "immer";
 
-type SecondParam<T> = T extends (a: any, b: infer R) => any ? R : never;
+type SecondParam<T> = T extends (s: any, p: infer R) => any ? R : never;
 
 // HACK https://stackoverflow.com/q/51342446/1325646
 type Action<I> = { [k in keyof I]: { name: k; value: I[k] } }[keyof I];
+type ActionCreator<K, R> = R extends (s: any) => any
+  ? () => { type: K; payload: SecondParam<R> }
+  : (p: SecondParam<R>) => { type: K; payload: SecondParam<R> };
 
-type Reducer<S, P> = (state: S, payload: P) => void;
+type Reducer<S> = (state: S, payload: any) => void;
 
-type Fluxify = <S, R extends { [x: string]: Reducer<S, any> }>(
+type Fluxify = <S, R extends { [x: string]: Reducer<S> }>(
   initialState: S,
   reducers: R
 ) => {
-  actions: {
-    [x in keyof R]: (
-      payload: SecondParam<R[x]>
-    ) => { type: x; payload: SecondParam<R[x]> }
-  };
+  actions: { [x in keyof R]: ActionCreator<x, R[x]> };
   reducer: (is: S, action: Action<R>) => S;
 };
 
