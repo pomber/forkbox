@@ -19,14 +19,20 @@ interface Command {
 }
 
 interface State {
-  baseRepoId?: string;
   repoName?: string;
-  repoUrl?: string;
-  dockerfile?: string;
-  selectedBlob?: Path;
+  baseRepoId?: string;
+  baseRepoUrl?: string;
+  baseRepoOwner?: string;
+
+  forkedRepoId?: string;
+  forkedRepoOwner?: string;
+
   isConnectingZeit?: boolean;
-  deployment: object;
   config: { commands?: Command[] };
+  deployment: object;
+  dockerfile?: string;
+
+  selectedBlob?: Path;
   tree: Record<string, string[]>;
   entries: Record<string, Entry>;
   texts: Record<string, string>;
@@ -41,7 +47,7 @@ let initialState: State = {
 };
 
 export const { actions, reducer } = fluxify(initialState, {
-  receiveRepo(state, { object, config, id, name, url }) {
+  receiveRepo(state, { object, config, id, name, url, owner }) {
     const entryList = mapEntries("/", object.entries);
     const dockerfileEntry = config.entries.find(
       e => e.name === "dev.dockerfile"
@@ -53,13 +59,18 @@ export const { actions, reducer } = fluxify(initialState, {
 
     state.baseRepoId = id;
     state.repoName = name;
-    state.repoUrl = url;
+    state.baseRepoUrl = url;
+    state.baseRepoOwner = owner.login;
     state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
     state.config = configFile;
     state.tree["/"] = entryList.map(e => e.path);
     for (const entry of entryList) {
       state.entries[entry.path] = entry;
     }
+  },
+  receiveForkedRepo(state, { repoId, repoOwner }) {
+    state.forkedRepoId = repoId;
+    state.forkedRepoOwner = repoOwner;
   },
   receiveTree(state, { path, entries }) {
     const entryList = mapEntries(path, entries);

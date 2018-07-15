@@ -32,6 +32,9 @@ export const getRepo = ({ token, owner, repoName, branch }) => gql`
   ) {
     owner: repositoryOwner(login: $owner) {
       repository(name: $repoName) {
+        owner {
+          login
+        }
         id
         name
         url
@@ -111,17 +114,20 @@ export const getBlobText = ({ token, repoId, entrySha }) => gql`
 `;
 
 export const forkRepo = async ({ token, owner, repoName }) => {
-  const data = await fetchData<{ node_id: string }>(
-    `https://api.github.com/repos/${owner}/${repoName}/forks`,
-    {
-      method: "post",
-      headers: new Headers({
-        authorization: "Bearer " + token
-      })
-    }
-  );
-  console.log(data);
-  return data;
+  const forkedRepo = await fetchData<{
+    node_id: string;
+    owner: { login: string };
+  }>(`https://api.github.com/repos/${owner}/${repoName}/forks`, {
+    method: "post",
+    headers: new Headers({
+      authorization: "Bearer " + token
+    })
+  });
+  console.log("fork", forkedRepo);
+  return {
+    repoId: forkedRepo.node_id,
+    repoOwner: forkedRepo.owner.login
+  };
 };
 
 export const deployToZeit = async ({

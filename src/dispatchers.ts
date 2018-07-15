@@ -31,6 +31,8 @@ export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
   const result = await api.getRepo({ token, owner, repoName, branch });
 
   dispatch(actions.receiveRepo(result));
+
+  await forkRepo()(dispatch, getState);
 };
 
 export const selectEntry = entry => (dispatch, getState) => {
@@ -137,6 +139,17 @@ export const stopDeployment = () => async (dispatch, getState) => {
   // const result = await api.stopZeitDeployment({ token, deploymentId });
   await killInstances(token, deploymentId);
   console.log("stopped");
+};
+
+export const forkRepo = () => async (dispatch, getState) => {
+  const token = localStorage["gh-token"];
+  const { baseRepoOwner, repoName } = getState();
+  const repoInfo = await api.forkRepo({
+    token,
+    owner: baseRepoOwner,
+    repoName
+  });
+  dispatch(actions.receiveForkedRepo(repoInfo));
 };
 
 // utils
