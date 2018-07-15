@@ -13,6 +13,11 @@ interface Entry {
   isSelected: boolean;
 }
 
+interface Command {
+  name: string;
+  env: Record<string, string>;
+}
+
 interface State {
   repoId?: string;
   repoName?: string;
@@ -21,12 +26,19 @@ interface State {
   selectedBlob?: Path;
   isConnectingZeit?: boolean;
   deployment: object;
-  tree: { [x: string]: string[] };
-  entries: { [x: string]: Entry };
-  texts: { [x: string]: string };
+  config: { commands?: Command[] };
+  tree: Record<string, string[]>;
+  entries: Record<string, Entry>;
+  texts: Record<string, string>;
 }
 
-let initialState: State = { tree: {}, texts: {}, entries: {}, deployment: {} };
+let initialState: State = {
+  tree: {},
+  texts: {},
+  entries: {},
+  deployment: {},
+  config: {}
+};
 
 export const { actions, reducer } = fluxify(initialState, {
   receiveRepo(state, { object, config, id, name, url }) {
@@ -35,10 +47,15 @@ export const { actions, reducer } = fluxify(initialState, {
       e => e.name === "dev.dockerfile"
     );
 
+    const configFile = JSON.parse(
+      config.entries.find(e => e.name === "config.json").object.text
+    );
+
     state.repoId = id;
     state.repoName = name;
     state.repoUrl = url;
     state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
+    state.config = configFile;
     state.tree["/"] = entryList.map(e => e.path);
     for (const entry of entryList) {
       state.entries[entry.path] = entry;

@@ -134,6 +134,9 @@ export const deployToZeit = async ({
           BRANCH_NAME: "master" //TODO set boxBranch
         }
       }
+    },
+    env: {
+      FORKBOX_COMMAND: "STORYBOOK"
     }
   };
   const response = await fetch("https://api.zeit.co/v3/now/deployments", {
