@@ -21,7 +21,8 @@ export const getRepo = ({ token, owner, repoName, branch }) => gql`
     owner,
     repoName,
     branchExpression: branch + ":",
-    configExpression: branch + ":.forkbox"
+    configExpression: branch + ":.forkbox",
+    refName: "refs/heads/" + branch
   }}
   ${({ owner }) => owner.repository}
   query(
@@ -29,6 +30,7 @@ export const getRepo = ({ token, owner, repoName, branch }) => gql`
     $repoName: String!
     $branchExpression: String!
     $configExpression: String!
+    $refName: String!
   ) {
     owner: repositoryOwner(login: $owner) {
       repository(name: $repoName) {
@@ -38,6 +40,11 @@ export const getRepo = ({ token, owner, repoName, branch }) => gql`
         id
         name
         url
+        ref(qualifiedName: $refName) {
+          target {
+            oid
+          }
+        }
         config: object(expression: $configExpression) {
           ... on Tree {
             entries {
@@ -128,6 +135,29 @@ export const forkRepo = async ({ token, owner, repoName }) => {
     repoId: forkedRepo.node_id,
     repoOwner: forkedRepo.owner.login
   };
+};
+
+export const createBranch = async ({
+  token,
+  owner,
+  repoName,
+  baseSha,
+  newBranch
+}) => {
+  const url = `https://api.github.com/repos/${owner}/${repoName}/git/refs`;
+
+  const result = await fetchData<{}>(url, {
+    method: "post",
+    body: JSON.stringify({
+      ref: "refs/heads/" + newBranch,
+      sha: baseSha
+    }),
+    headers: new Headers({
+      authorization: "Bearer " + token
+    })
+  });
+
+  console.log("newbranch", result);
 };
 
 export const deployToZeit = async ({

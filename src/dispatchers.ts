@@ -33,6 +33,7 @@ export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
   dispatch(actions.receiveRepo(result));
 
   await forkRepo()(dispatch, getState);
+  await createBoxBranch()(dispatch, getState);
 };
 
 export const selectEntry = entry => (dispatch, getState) => {
@@ -150,6 +151,21 @@ export const forkRepo = () => async (dispatch, getState) => {
     repoName
   });
   dispatch(actions.receiveForkedRepo(repoInfo));
+};
+
+const createBoxBranch = () => async (dispatch, getState) => {
+  const token = localStorage["gh-token"];
+  const { forkedRepoOwner, repoName, baseBranchSha } = getState();
+  const newBranch = "forkbox-" + new Date().getTime();
+  // TODO rewrite url
+  await api.createBranch({
+    token,
+    owner: forkedRepoOwner,
+    repoName,
+    baseSha: baseBranchSha,
+    newBranch
+  });
+  dispatch(actions.receiveBoxBranch(newBranch));
 };
 
 // utils

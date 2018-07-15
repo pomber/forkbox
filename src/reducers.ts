@@ -23,9 +23,11 @@ interface State {
   baseRepoId?: string;
   baseRepoUrl?: string;
   baseRepoOwner?: string;
+  baseBranchSha?: string;
 
   forkedRepoId?: string;
   forkedRepoOwner?: string;
+  boxBranchName?: string;
 
   isConnectingZeit?: boolean;
   config: { commands?: Command[] };
@@ -47,7 +49,7 @@ let initialState: State = {
 };
 
 export const { actions, reducer } = fluxify(initialState, {
-  receiveRepo(state, { object, config, id, name, url, owner }) {
+  receiveRepo(state, { object, ref, config, id, name, url, owner }) {
     const entryList = mapEntries("/", object.entries);
     const dockerfileEntry = config.entries.find(
       e => e.name === "dev.dockerfile"
@@ -61,6 +63,7 @@ export const { actions, reducer } = fluxify(initialState, {
     state.repoName = name;
     state.baseRepoUrl = url;
     state.baseRepoOwner = owner.login;
+    state.baseBranchSha = ref.target.oid;
     state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
     state.config = configFile;
     state.tree["/"] = entryList.map(e => e.path);
@@ -71,6 +74,9 @@ export const { actions, reducer } = fluxify(initialState, {
   receiveForkedRepo(state, { repoId, repoOwner }) {
     state.forkedRepoId = repoId;
     state.forkedRepoOwner = repoOwner;
+  },
+  receiveBoxBranch(state, boxBranchName: string) {
+    state.boxBranchName = boxBranchName;
   },
   receiveTree(state, { path, entries }) {
     const entryList = mapEntries(path, entries);
