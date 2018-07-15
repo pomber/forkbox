@@ -19,7 +19,7 @@ interface Command {
 }
 
 interface State {
-  repoId?: string;
+  baseRepoId?: string;
   repoName?: string;
   repoUrl?: string;
   dockerfile?: string;
@@ -51,7 +51,7 @@ export const { actions, reducer } = fluxify(initialState, {
       config.entries.find(e => e.name === "config.json").object.text
     );
 
-    state.repoId = id;
+    state.baseRepoId = id;
     state.repoName = name;
     state.repoUrl = url;
     state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;

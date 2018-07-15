@@ -7,8 +7,8 @@ export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
   dispatch,
   getState
 ) => {
-  const { repoId } = getState();
-  if (repoId) return;
+  const { baseRepoId } = getState();
+  if (baseRepoId) return;
   let token = localStorage["gh-token"];
 
   if (!token && !ghCode) {
@@ -22,7 +22,7 @@ export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
 
   console.log(zeitCode);
   if (!localStorage["zeit-token"] && zeitCode) {
-    dispatch(actions.connectingToZeit());
+    dispatch(actions.connectingToZeit({}));
     api
       .getZeitToken(zeitCode)
       .then(zeitToken => (localStorage["zeit-token"] = zeitToken));
@@ -87,13 +87,15 @@ export const connectWithZeit = () => (dispatch, getState) => {
 };
 
 export const deploy = commandName => async (dispatch, getState) => {
-  const { dockerfile, repoName, repoUrl, config } = getState();
+  const { dockerfile, repoName, config, forkedRepoUrl } = getState();
   const token = localStorage["zeit-token"];
   const env = config.commands.find(c => c.name === commandName).env;
   const deployment = await api.deployToZeit({
     token,
     dockerfile,
     repoName,
+    repoUrl: forkedRepoUrl,
+    boxBranch: "master", //TODO set boxBranch
     env
   });
   console.log("deploy", deployment);

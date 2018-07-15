@@ -1,4 +1,5 @@
 import gql from "./utils/gql";
+import { fetchData } from "./utils/fetch";
 
 export const getGhToken = code =>
   fetch("/.netlify/functions/gh-token?code=" + code)
@@ -109,6 +110,20 @@ export const getBlobText = ({ token, repoId, entrySha }) => gql`
   }
 `;
 
+export const forkRepo = async ({ token, owner, repoName }) => {
+  const data = await fetchData<{ node_id: string }>(
+    `https://api.github.com/repos/${owner}/${repoName}/forks`,
+    {
+      method: "post",
+      headers: new Headers({
+        authorization: "Bearer " + token
+      })
+    }
+  );
+  console.log(data);
+  return data;
+};
+
 export const deployToZeit = async ({
   token,
   dockerfile,
@@ -131,8 +146,8 @@ export const deployToZeit = async ({
       },
       build: {
         env: {
-          REPO_URL: repoUrl, //TODO set forked repoUrl
-          BRANCH_NAME: "master" //TODO set boxBranch
+          REPO_URL: repoUrl,
+          BRANCH_NAME: boxBranch
         }
       }
     },
@@ -159,23 +174,9 @@ export const deployToZeit = async ({
 };
 
 export const getZeitDeployment = async ({ deploymentId }) => {
-  const response = fetch(
+  const response = await fetch(
     "https://api.zeit.co/v2/now/deployments/" + deploymentId
   );
   console.log(response);
-};
-
-export const stopZeitDeployment = async ({ token, deploymentId }) => {
-  // TODO we want to stop the instance, not scale the deployment to 0
-  // const response = await fetch(
-  //   `https://api.zeit.co/v1/now/deployments/${deploymentId}/instances`,
-  //   {
-  //     method: "post",
-  //     body: JSON.stringify({ min: 0, max: 0 }),
-  //     headers: new Headers({
-  //       authorization: "Bearer " + token
-  //     })
-  //   }
-  // );
-  // console.log("stop", response);
+  return response.json();
 };
