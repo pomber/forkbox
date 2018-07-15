@@ -114,7 +114,8 @@ export const deployToZeit = async ({
   dockerfile,
   repoName,
   repoUrl,
-  boxBranch
+  boxBranch,
+  env
 }) => {
   const body = {
     public: true,
@@ -135,9 +136,7 @@ export const deployToZeit = async ({
         }
       }
     },
-    env: {
-      FORKBOX_COMMAND: "STORYBOOK"
-    }
+    env
   };
   const response = await fetch("https://api.zeit.co/v3/now/deployments", {
     method: "post",

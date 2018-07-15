@@ -22,10 +22,15 @@ const TerminalPanel = ({
         {!isConnectedToZeit && (
           <S.Button onClick={connectWithZeit}>Connect with Zeit</S.Button>
         )}
-        <S.Button onClick={deploy} disabled={!isConnectedToZeit}>
-          Launch Terminal
-        </S.Button>
-        <pre>{JSON.stringify(commandNames)}</pre>
+        {commandNames.map(commandName => (
+          <S.Button
+            key={commandName}
+            onClick={() => deploy(commandName)}
+            disabled={!isConnectedToZeit}
+          >
+            {commandName}
+          </S.Button>
+        ))}
       </React.Fragment>
     )}
   </S.TerminalPanel>

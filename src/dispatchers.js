@@ -86,10 +86,16 @@ export const connectWithZeit = () => (dispatch, getState) => {
   router.redirectToZeitAuth();
 };
 
-export const deploy = () => async (dispatch, getState) => {
-  const { dockerfile, repoName, repoUrl } = getState();
+export const deploy = commandName => async (dispatch, getState) => {
+  const { dockerfile, repoName, repoUrl, config } = getState();
   const token = localStorage["zeit-token"];
-  const deployment = await api.deployToZeit({ token, dockerfile, repoName });
+  const env = config.commands.find(c => c.name === commandName).env;
+  const deployment = await api.deployToZeit({
+    token,
+    dockerfile,
+    repoName,
+    env
+  });
   console.log("deploy", deployment);
   let deploymentState = deployment.readyState;
   updateDeployment(deployment, deploymentState, dispatch);
