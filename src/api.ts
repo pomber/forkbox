@@ -40,6 +40,13 @@ export const getRepo = ({ token, owner, repoName, branch }) => gql`
         id
         name
         url
+        parent {
+          owner {
+            login
+          }
+          url
+          id
+        }
         ref(qualifiedName: $refName) {
           target {
             oid

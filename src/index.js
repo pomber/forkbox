@@ -1,28 +1,24 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import { injectGlobalStyle } from "./styles";
+import { createStore, applyMiddleware } from "redux";
+import { Provider } from "react-redux";
+import thunk from "redux-thunk";
+import { reducer } from "./reducers";
 import "./primer.css";
 import App from "./app";
-import StoreProvider from "./store-provider";
-import router from "./router";
+import { injectGlobalStyle } from "./styles";
+import { bindRouter } from "./router-new";
+
+const store = createStore(reducer, applyMiddleware(thunk));
+const StoreProvider = props => <Provider store={store} {...props} />;
+
+bindRouter(store);
 
 injectGlobalStyle();
 
-let result = router.parseUrl();
-console.log(result);
-const { repoOwner, repoName, baseBranch, ghCode, zeitCode } = result;
-
-router.rewriteUrl();
-
 ReactDOM.render(
   <StoreProvider>
-    <App
-      owner={repoOwner}
-      repoName={repoName}
-      baseBranch={baseBranch}
-      ghCode={ghCode}
-      zeitCode={zeitCode}
-    />
+    <App />
   </StoreProvider>,
   document.getElementById("root")
 );

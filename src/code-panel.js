@@ -8,7 +8,8 @@ import { editText } from "./dispatchers";
 const options = {
   minimap: { enabled: false },
   lineNumbers: "off",
-  scrollBeyondLastLine: false
+  scrollBeyondLastLine: false,
+  theme: "vs-dark"
 };
 
 const CodePanel = ({ text, language, onChange }) => (
@@ -26,7 +27,7 @@ const mapStateToProps = state => {
   const selectedPath = state.selectedBlob;
   const text = selectedPath && state.texts[selectedPath];
   return {
-    text: text || "// Loading...",
+    text: text || "",
     language: getLanguage(selectedPath)
   };
 };

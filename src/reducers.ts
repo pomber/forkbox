@@ -24,6 +24,7 @@ interface State {
   baseRepoUrl?: string;
   baseRepoOwner?: string;
   baseBranchSha?: string;
+  baseBranchName?: string;
 
   forkedRepoId?: string;
   forkedRepoUrl?: string;
@@ -50,6 +51,33 @@ let initialState: State = {
 };
 
 export const { actions, reducer } = fluxify(initialState, {
+  initForkedRepo(state, { object, ref, config, id, name, url, owner, parent }) {
+    const entryList = mapEntries("/", object.entries);
+    const dockerfileEntry = config.entries.find(
+      e => e.name === "dev.dockerfile"
+    );
+
+    const configFile = JSON.parse(
+      config.entries.find(e => e.name === "config.json").object.text
+    );
+
+    state.forkedRepoId = id;
+    state.forkedRepoOwner = owner.login;
+    state.forkedRepoUrl = url;
+    state.baseBranchSha = ref.target.oid;
+
+    state.repoName = name;
+    state.baseRepoId = parent.id;
+    state.baseRepoUrl = parent.url;
+    state.baseRepoOwner = parent.owner.login;
+
+    state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
+    state.config = configFile;
+    state.tree["/"] = entryList.map(e => e.path);
+    for (const entry of entryList) {
+      state.entries[entry.path] = entry;
+    }
+  },
   receiveRepo(state, { object, ref, config, id, name, url, owner }) {
     const entryList = mapEntries("/", object.entries);
     const dockerfileEntry = config.entries.find(

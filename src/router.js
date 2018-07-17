@@ -1,32 +1,9 @@
 import pathToRegexp from "path-to-regexp";
 
-const forkPath = pathToRegexp("/f/:repoOwner/:repoName/:branch*");
-const ghPath = pathToRegexp("/gh-callback/f/:repoOwner/:repoName/:branch*");
 const zeitPath = pathToRegexp("/zeit-callback/");
 const ghRewrite = pathToRegexp("/gh-callback/:path*");
 
-export default {
-  parseUrl() {
-    let { pathname } = location;
-
-    const isZeitCallback = zeitPath.exec(pathname);
-    if (isZeitCallback) {
-      pathname = new URLSearchParams(location.search).get("state");
-    }
-
-    const [_, repoOwner, repoName, baseBranch] =
-      ghPath.exec(pathname) || forkPath.exec(pathname);
-
-    const code = new URLSearchParams(location.search).get("code");
-
-    return {
-      repoOwner,
-      repoName,
-      baseBranch: baseBranch || "master",
-      ghCode: !isZeitCallback && code,
-      zeitCode: isZeitCallback && code
-    };
-  },
+const router = {
   rewriteUrl() {
     const { pathname } = location;
 
@@ -58,3 +35,4 @@ export default {
     }&state=${location.pathname}`;
   }
 };
+export default router;

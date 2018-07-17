@@ -3,10 +3,13 @@ import { actions } from "./reducers";
 import router from "./router";
 import { killInstances } from "./now-api";
 
-export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
-  dispatch,
-  getState
-) => {
+export const initNewBox = ({
+  baseRepoOwner,
+  repoName,
+  baseBranchName = "master",
+  ghCode,
+  zeitCode
+}) => async (dispatch, getState) => {
   const { baseRepoId } = getState();
   if (baseRepoId) return;
   let token = localStorage["gh-token"];
@@ -28,14 +31,58 @@ export const initBox = (owner, repoName, branch, ghCode, zeitCode) => async (
       .then(zeitToken => (localStorage["zeit-token"] = zeitToken));
   }
 
-  const result = await api.getRepo({ token, owner, repoName, branch });
+  const result = await api.getRepo({
+    token,
+    owner: baseRepoOwner,
+    repoName,
+    branch: baseBranchName
+  });
 
+  // TODO set baseBranchName
   dispatch(actions.receiveRepo(result));
 
   await forkRepo()(dispatch, getState);
   await createBoxBranch()(dispatch, getState);
-  const { forkedRepoOwner, boxBranchName } = getState();
-  router.rewriteBoxUrl(forkedRepoOwner, repoName, boxBranchName);
+};
+
+export const initBox = ({
+  forkedRepoOwner,
+  repoName,
+  boxBranchName,
+  baseBranchName,
+  ghCode,
+  zeitCode
+}) => async (dispatch, getState) => {
+  let token = localStorage["gh-token"];
+
+  if (!token && !ghCode) {
+    router.redirectToGhAuth();
+  }
+
+  if (!token) {
+    token = await api.getGhToken(ghCode);
+    localStorage["gh-token"] = token;
+  }
+
+  console.log(zeitCode);
+  if (!localStorage["zeit-token"] && zeitCode) {
+    dispatch(actions.connectingToZeit());
+    api
+      .getZeitToken(zeitCode)
+      .then(zeitToken => (localStorage["zeit-token"] = zeitToken));
+  }
+
+  dispatch(actions.receiveBoxBranch(boxBranchName));
+
+  const result = await api.getRepo({
+    token,
+    owner: forkedRepoOwner,
+    repoName,
+    branch: boxBranchName
+  });
+
+  // TODO set baseBranchName
+  dispatch(actions.initForkedRepo(result));
 };
 
 export const selectEntry = entry => (dispatch, getState) => {
@@ -55,7 +102,7 @@ const selectBlob = entry => (dispatch, getState) => {
 
 const fetchBlob = path => (dispatch, getState) => {
   const state = getState();
-  const repoId = state.repoId;
+  const repoId = state.forkedRepoId || state.baseRepoId;
   const entrySha = state.entries[path].sha;
   const token = localStorage["gh-token"];
   return api
@@ -72,7 +119,7 @@ const selectTree = entry => (dispatch, getState) => {
 
 const fetchTree = path => (dispatch, getState) => {
   const state = getState();
-  const repoId = state.repoId;
+  const repoId = state.forkedRepoId || state.baseRepoId;
   const entrySha = state.entries[path].sha;
   const token = localStorage["gh-token"];
   return api
