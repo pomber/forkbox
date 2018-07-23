@@ -1,12 +1,7 @@
 import * as api from "./api";
 import { actions } from "./reducers";
 import { killInstances } from "./now-api";
-import {
-  fetchGithubToken,
-  fetchZeitToken,
-  getGithubToken,
-  getZeitToken
-} from "./token-store";
+import { getGithubToken, getZeitToken } from "./token-store";
 
 export const initNewBox = ({
   baseRepoOwner,
@@ -38,9 +33,7 @@ export const initBox = ({
   forkedRepoOwner,
   repoName,
   boxBranchName,
-  baseBranchName,
-  ghCode,
-  zeitCode
+  baseBranchName
 }) => async (dispatch, getState) => {
   let token = await getGithubToken();
 

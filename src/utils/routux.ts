@@ -1,11 +1,12 @@
 import pathMatch from "path-match";
 import pathToRegexp from "path-to-regexp";
 
-const matches = (pattern: string, path: string): boolean => {
-  return pathMatch()(pattern)(path);
+export const matches = (pattern: string, path: string): boolean => {
+  const withoutQuery = pattern.split("?")[0];
+  return pathMatch()(withoutQuery)(path);
 };
 
-const extract = (pattern: string, path: string) => {
+export const extract = (pattern: string, path: string) => {
   return pathMatch()(pattern)(path);
 };
 

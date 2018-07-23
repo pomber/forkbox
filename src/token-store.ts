@@ -28,9 +28,9 @@ const { actions, reducer } = fluxify(
 
 export default reducer;
 
-export const fetchGithubToken = code => dispatch => {
+export const loadGithubToken = ({ ghCode }) => dispatch => {
   ghPromise = fetchData<{ access_token: string }>(
-    "/.netlify/functions/gh-token?code=" + code
+    "/.netlify/functions/gh-token?code=" + ghCode
   ).then(({ access_token }) => {
     localStorage["gh-token"] = access_token;
     dispatch(actions.receiveGithubToken());
@@ -38,9 +38,9 @@ export const fetchGithubToken = code => dispatch => {
   });
 };
 
-export const fetchZeitToken = code => dispatch => {
+export const loadZeitToken = ({ zeitCode }) => dispatch => {
   zeitPromise = fetchData<{ access_token: string }>(
-    "/.netlify/functions/zeit-token?code=" + code
+    "/.netlify/functions/zeit-token?code=" + zeitCode
   ).then(({ access_token }) => {
     localStorage["zeit-token"] = access_token;
     dispatch(actions.receiveZeitToken());

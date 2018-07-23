@@ -1,5 +1,6 @@
 import { initBox, initNewBox } from "./dispatchers";
 import { bind } from "./utils/routux";
+import { loadGithubToken, loadZeitToken } from "./token-store";
 
 enum Path {
   NewBox,
@@ -19,11 +20,11 @@ const entrypoints = {
   },
   [Path.GhCallback]: {
     pattern: "/gh-callback/:_path*?code=:ghCode",
-    dispatcher: initBox
+    dispatcher: loadGithubToken
   },
   [Path.ZeitCallback]: {
-    pattern: "/zeit-callback/?code=:zeitCode&state=:_path",
-    dispatcher: initBox
+    pattern: "/zeit-callback/*?code=:zeitCode&state=:_path",
+    dispatcher: loadZeitToken
   }
 };
 
