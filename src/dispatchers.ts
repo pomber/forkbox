@@ -1,7 +1,12 @@
 import * as api from "./api";
 import { actions } from "./reducers";
-import router from "./router";
 import { killInstances } from "./now-api";
+import {
+  fetchGithubToken,
+  fetchZeitToken,
+  getGithubToken,
+  getZeitToken
+} from "./token-store";
 
 export const initNewBox = ({
   baseRepoOwner,
@@ -12,24 +17,8 @@ export const initNewBox = ({
 }) => async (dispatch, getState) => {
   const { baseRepoId } = getState();
   if (baseRepoId) return;
-  let token = localStorage["gh-token"];
 
-  if (!token && !ghCode) {
-    router.redirectToGhAuth();
-  }
-
-  if (!token) {
-    token = await api.getGhToken(ghCode);
-    localStorage["gh-token"] = token;
-  }
-
-  console.log(zeitCode);
-  if (!localStorage["zeit-token"] && zeitCode) {
-    dispatch(actions.connectingToZeit());
-    api
-      .getZeitToken(zeitCode)
-      .then(zeitToken => (localStorage["zeit-token"] = zeitToken));
-  }
+  let token = await getGithubToken();
 
   const result = await api.getRepo({
     token,
@@ -53,26 +42,16 @@ export const initBox = ({
   ghCode,
   zeitCode
 }) => async (dispatch, getState) => {
-  let token = localStorage["gh-token"];
+  let token = await getGithubToken();
 
-  if (!token && !ghCode) {
-    router.redirectToGhAuth();
-  }
-
-  if (!token) {
-    token = await api.getGhToken(ghCode);
-    localStorage["gh-token"] = token;
-  }
-
-  console.log(zeitCode);
-  if (!localStorage["zeit-token"] && zeitCode) {
-    dispatch(actions.connectingToZeit());
-    api
-      .getZeitToken(zeitCode)
-      .then(zeitToken => (localStorage["zeit-token"] = zeitToken));
-  }
-
-  dispatch(actions.receiveBoxBranch(boxBranchName));
+  dispatch(
+    actions.receiveBoxInfo({
+      forkedRepoOwner,
+      repoName,
+      boxBranchName,
+      baseBranchName
+    })
+  );
 
   const result = await api.getRepo({
     token,
@@ -100,11 +79,11 @@ const selectBlob = entry => (dispatch, getState) => {
   dispatch(actions.selectBlob(entry));
 };
 
-const fetchBlob = path => (dispatch, getState) => {
+const fetchBlob = path => async (dispatch, getState) => {
   const state = getState();
   const repoId = state.forkedRepoId || state.baseRepoId;
   const entrySha = state.entries[path].sha;
-  const token = localStorage["gh-token"];
+  const token = await getGithubToken();
   return api
     .getBlobText({ token, repoId, entrySha })
     .then(text => dispatch(actions.receiveBlobText({ path, text })));
@@ -117,11 +96,11 @@ const selectTree = entry => (dispatch, getState) => {
   dispatch(actions.toggleTree(entry));
 };
 
-const fetchTree = path => (dispatch, getState) => {
+const fetchTree = path => async (dispatch, getState) => {
   const state = getState();
   const repoId = state.forkedRepoId || state.baseRepoId;
   const entrySha = state.entries[path].sha;
-  const token = localStorage["gh-token"];
+  const token = await getGithubToken();
   return api
     .getTree({ token, repoId, entrySha })
     .then(result => dispatch(actions.receiveTree({ path, entries: result })));
@@ -134,8 +113,8 @@ export const editText = text => (dispatch, getState) => {
   }
 };
 
-export const connectWithZeit = () => (dispatch, getState) => {
-  router.redirectToZeitAuth();
+export const connectWithZeit = () => async (dispatch, getState) => {
+  await getZeitToken();
 };
 
 export const deploy = commandName => async (dispatch, getState) => {
@@ -146,7 +125,7 @@ export const deploy = commandName => async (dispatch, getState) => {
     forkedRepoUrl,
     boxBranchName
   } = getState();
-  const token = localStorage["zeit-token"];
+  const token = await getZeitToken();
   const env = config.commands.find(c => c.name === commandName).env;
   const deployment = await api.deployToZeit({
     token,
@@ -189,7 +168,7 @@ const updateDeployment = (deployment, deploymentState, dispatch) => {
 
 export const stopDeployment = () => async (dispatch, getState) => {
   console.log("stop deployment");
-  const token = localStorage["zeit-token"];
+  const token = await getZeitToken();
   const { deploymentId } = getState().deployment;
   dispatch(actions.receiveDeployment({}));
   // const result = await api.stopZeitDeployment({ token, deploymentId });
@@ -198,7 +177,7 @@ export const stopDeployment = () => async (dispatch, getState) => {
 };
 
 export const forkRepo = () => async (dispatch, getState) => {
-  const token = localStorage["gh-token"];
+  const token = await getGithubToken();
   const { baseRepoOwner, repoName } = getState();
   const repoInfo = await api.forkRepo({
     token,
@@ -209,7 +188,7 @@ export const forkRepo = () => async (dispatch, getState) => {
 };
 
 const createBoxBranch = () => async (dispatch, getState) => {
-  const token = localStorage["gh-token"];
+  const token = await getGithubToken();
   const { forkedRepoOwner, repoName, baseBranchSha } = getState();
   const newBranch = "forkbox-" + new Date().getTime();
   // TODO rewrite url

@@ -33,7 +33,7 @@ const fluxify: Fluxify = (initialState, reducers) => {
           reducer(draftState, payload);
         })
       : state;
-    console.log("new state", newState);
+    // console.log("new state", newState);
     return newState;
   };
 

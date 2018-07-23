@@ -38,8 +38,7 @@ const TerminalPanel = ({
 
 const mapStateToProps = (state, {}) => {
   const { isLoading, isError, isReady, url } = state.deployment;
-  const isConnectedToZeit =
-    !!localStorage["zeit-token"] || state.isConnectingZeit;
+  const isConnectedToZeit = state.hasZeitToken;
 
   const commandNames = state.config.commands
     ? state.config.commands.map(c => c.name)

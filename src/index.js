@@ -8,8 +8,24 @@ import "./primer.css";
 import App from "./app";
 import { injectGlobalStyle } from "./styles";
 import { bindRouter } from "./router-new";
+import tokenReducer from "./token-store";
 
-const store = createStore(reducer, applyMiddleware(thunk));
+const reducers = [reducer, tokenReducer];
+const mainReducer = (state, action) => {
+  console.log("action", action);
+  if (!state) {
+    const states = reducers.map(r => r(state, action));
+    const newState = Object.assign({}, ...states);
+    console.log("new state", newState);
+    return newState;
+  } else {
+    const newState = reducers.reduce((s, r) => r(s, action), state);
+    console.log("new state", newState);
+    return newState;
+  }
+};
+
+const store = createStore(mainReducer, applyMiddleware(thunk));
 const StoreProvider = props => <Provider store={store} {...props} />;
 
 bindRouter(store);

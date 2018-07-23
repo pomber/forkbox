@@ -31,7 +31,6 @@ interface State {
   forkedRepoOwner?: string;
   boxBranchName?: string;
 
-  isConnectingZeit?: boolean;
   config: { commands?: Command[] };
   deployment: object;
   dockerfile?: string;
@@ -105,6 +104,15 @@ export const { actions, reducer } = fluxify(initialState, {
     state.forkedRepoOwner = repoOwner;
     state.forkedRepoUrl = repoUrl;
   },
+  receiveBoxInfo(
+    state,
+    { repoName, boxBranchName, forkedRepoOwner, baseBranchName }
+  ) {
+    state.boxBranchName = boxBranchName;
+    state.forkedRepoOwner = forkedRepoOwner;
+    state.baseBranchName = baseBranchName;
+    state.repoName = repoName;
+  },
   receiveBoxBranch(state, boxBranchName: string) {
     state.boxBranchName = boxBranchName;
   },
@@ -135,9 +143,6 @@ export const { actions, reducer } = fluxify(initialState, {
   editText(state, { path, text }) {
     state.texts[path] = text;
     state.entries[path].isDirty = true;
-  },
-  connectingToZeit(state) {
-    state.isConnectingZeit = true;
   },
   receiveDeployment(state, deployment: object) {
     state.deployment = deployment;
