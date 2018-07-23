@@ -57,7 +57,8 @@ export const bindRouter = store => {
         }
       };
     } else {
-      throw new Error("Why we don't have a repoName in the redux store?");
+      return null;
+      // throw new Error("Why we don't have a repoName in the redux store?");
     }
   });
 };

@@ -42,21 +42,32 @@ export const bind = (store, entrypoints: EntryPoints, render) => {
   const toPath = (pathName, params) =>
     pathToRegexp.compile(entrypoints[pathName].pattern)(params);
 
-  const currentPath = window.location.pathname;
+  const currentPath = window.location.pathname + window.location.search;
   const { pattern, dispatcher } = Object.values(entrypoints).find(entrypoint =>
     matches(entrypoint.pattern, currentPath)
   );
 
   const params = extract(pattern, currentPath);
+  console.log("params", params);
   dispatcher(params)(store.dispatch, store.getState);
 
-  // TODO fix callbacks
-  // if ("_path" in params) {
-  // }
+  if ("_path" in params) {
+    const newPath = params["_path"];
+    const newEntrypoint = Object.values(entrypoints).find(entrypoint =>
+      matches(entrypoint.pattern, newPath)
+    );
+    const newParams = extract(newEntrypoint.pattern, newPath);
+    console.log("newParams", newParams);
+    newEntrypoint.dispatcher(newParams)(store.dispatch, store.getState);
+  }
 
   store.subscribe(() => {
     const currentPath = window.location.pathname;
-    const { pathName, params } = render(store.getState());
+    const newRoute = render(store.getState());
+    if (!newRoute) {
+      return;
+    }
+    const { pathName, params } = newRoute;
     const newPath = toPath(pathName, params);
     console.log("newpath", newPath);
     if (newPath != currentPath) {
