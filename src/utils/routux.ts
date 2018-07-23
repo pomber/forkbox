@@ -7,7 +7,28 @@ export const matches = (pattern: string, path: string): boolean => {
 };
 
 export const extract = (pattern: string, path: string) => {
-  return pathMatch()(pattern)(path);
+  const patternWithoutQuery = pattern.split("?")[0];
+  const pathWithoutQuery = path.split("?")[0];
+  const result = pathMatch()(patternWithoutQuery)(pathWithoutQuery);
+  Object.keys(result).forEach(key => {
+    const value = result[key];
+    if (value instanceof Array) {
+      result[key] = value.join("/");
+      if (key === "_path") {
+        result[key] = "/" + result[key];
+      }
+    }
+  });
+  const queryRegex = /([^=?&]+)=:([^&]+)/g;
+
+  const queryParams = new URLSearchParams(path.split("?")[1]);
+  let match = [];
+  while ((match = queryRegex.exec(pattern))) {
+    const [_, queryKey, keyName] = match;
+    result[keyName] = queryParams.get(queryKey);
+  }
+
+  return result;
 };
 
 interface EntryPoint {
