@@ -1,6 +1,5 @@
 import { fetchData } from "./utils/fetch";
 import fluxify from "./utils/fluxify";
-// import fluxify from "./utils/fluxify";
 
 declare const process: { readonly env: Record<string, string> };
 let ghPromise = null;

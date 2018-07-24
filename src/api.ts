@@ -48,6 +48,7 @@ export const getRepo = ({ token, owner, repoName, branch }) => gql`
           id
         }
         ref(qualifiedName: $refName) {
+          name
           target {
             oid
           }

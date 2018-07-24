@@ -92,6 +92,7 @@ export const { actions, reducer } = fluxify(initialState, {
     state.baseRepoUrl = url;
     state.baseRepoOwner = owner.login;
     state.baseBranchSha = ref.target.oid;
+    state.baseBranchName = ref.name;
     state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
     state.config = configFile;
     state.tree["/"] = entryList.map(e => e.path);

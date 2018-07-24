@@ -220,8 +220,14 @@ export const saveEntry = () => async (dispatch, getState) => {
 };
 
 export const sendPullRequest = () => async (dispatchEvent, getState) => {
-  // const { forkedRepoOwner, repoName, baseBranchSha } = getState();
-  console.log("Send PR");
+  const {
+    baseRepoOwner,
+    repoName,
+    baseBranchName,
+    forkedRepoOwner,
+    boxBranchName
+  } = getState();
+  location.href = `https://github.com/${baseRepoOwner}/${repoName}/compare/${baseBranchName}...${forkedRepoOwner}:${boxBranchName}`;
 };
 
 // utils
