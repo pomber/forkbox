@@ -146,6 +146,11 @@ export const { actions, reducer } = fluxify(initialState, {
   },
   receiveDeployment(state, deployment: object) {
     state.deployment = deployment;
+  },
+  receiveCommittedEntry(state, { path, sha }) {
+    const entry = state.entries[path];
+    entry.sha = sha;
+    entry.isDirty = false;
   }
 });
 

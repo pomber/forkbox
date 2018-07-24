@@ -195,6 +195,30 @@ const createBoxBranch = () => async (dispatch, getState) => {
   dispatch(actions.receiveBoxBranch(newBranch));
 };
 
+export const saveEntry = () => async (dispatch, getState) => {
+  const token = await getGithubToken();
+  const {
+    forkedRepoOwner,
+    repoName,
+    boxBranchName,
+    selectedBlob,
+    texts,
+    entries
+  } = getState();
+  const text = texts[selectedBlob];
+  const sha = entries[selectedBlob].sha;
+  const entryNewInfo = await api.commitContent({
+    token,
+    owner: forkedRepoOwner,
+    repoName,
+    path: selectedBlob,
+    content: text,
+    branchName: boxBranchName,
+    sha
+  });
+  dispatch(actions.receiveCommittedEntry(entryNewInfo));
+};
+
 // utils
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));

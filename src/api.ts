@@ -225,3 +225,40 @@ export const getZeitDeployment = async ({ deploymentId }) => {
   console.log(response);
   return response.json();
 };
+
+function utoa(str) {
+  return window.btoa(unescape(encodeURIComponent(str)));
+}
+export const commitContent = async ({
+  token,
+  owner,
+  repoName,
+  path,
+  content,
+  branchName,
+  sha
+}) => {
+  const url = `https://api.github.com/repos/${owner}/${repoName}/contents${path}`;
+  const body = {
+    path,
+    sha,
+    branch: branchName,
+    content: utoa(content),
+    message: `Edit ${path}`
+  };
+  const data = await fetchData<{
+    content: {
+      path: string;
+      sha: string;
+      size: number;
+    };
+  }>(url, {
+    method: "put",
+    body: JSON.stringify(body),
+    headers: new Headers({ authorization: "Bearer " + token })
+  });
+
+  data.content.path = path;
+
+  return data.content;
+};
