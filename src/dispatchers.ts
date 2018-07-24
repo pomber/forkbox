@@ -6,9 +6,7 @@ import { getGithubToken, getZeitToken } from "./token-store";
 export const initNewBox = ({
   baseRepoOwner,
   repoName,
-  baseBranchName = "master",
-  ghCode,
-  zeitCode
+  baseBranchName = "master"
 }) => async (dispatch, getState) => {
   const { baseRepoId } = getState();
   if (baseRepoId) return;
@@ -22,7 +20,6 @@ export const initNewBox = ({
     branch: baseBranchName
   });
 
-  // TODO set baseBranchName
   dispatch(actions.receiveRepo(result));
 
   await forkRepo()(dispatch, getState);
@@ -53,7 +50,6 @@ export const initBox = ({
     branch: boxBranchName
   });
 
-  // TODO set baseBranchName
   dispatch(actions.initForkedRepo(result));
 };
 
@@ -184,7 +180,6 @@ const createBoxBranch = () => async (dispatch, getState) => {
   const token = await getGithubToken();
   const { forkedRepoOwner, repoName, baseBranchSha } = getState();
   const newBranch = "forkbox-" + new Date().getTime();
-  // TODO rewrite url
   await api.createBranch({
     token,
     owner: forkedRepoOwner,
