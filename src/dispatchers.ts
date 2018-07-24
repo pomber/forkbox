@@ -219,6 +219,11 @@ export const saveEntry = () => async (dispatch, getState) => {
   dispatch(actions.receiveCommittedEntry(entryNewInfo));
 };
 
+export const sendPullRequest = () => async (dispatchEvent, getState) => {
+  // const { forkedRepoOwner, repoName, baseBranchSha } = getState();
+  console.log("Send PR");
+};
+
 // utils
 
 const wait = ms => new Promise(resolve => setTimeout(resolve, ms));

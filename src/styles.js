@@ -27,6 +27,8 @@ export const FilePanel = styled.div`
   width: 200px;
   height: 100%;
   padding: 10px;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const FilePanelButtons = styled.div`
