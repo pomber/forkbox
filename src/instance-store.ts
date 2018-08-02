@@ -1,7 +1,7 @@
 import fluxify from "./utils/fluxify";
 import { getZeitToken } from "./token-store";
 import * as api from "./api";
-enum Status {
+export enum Status {
   UNKNOWN,
   DEPLOYING,
   BUILDING,

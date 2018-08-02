@@ -2,43 +2,49 @@ import React from "react";
 import * as S from "./styles";
 import { connect } from "react-redux";
 import { connectWithZeit, stopDeployment } from "./dispatchers";
-import { startInstance } from "./instance-store";
+import { startInstance, Status } from "./instance-store";
 
 const TerminalPanel = ({
-  isReady,
-  url,
   commandNames,
+  instance,
   isConnectedToZeit,
   connectWithZeit,
   startInstance,
   stopDeployment
 }) => (
   <S.TerminalPanel>
-    {isReady ? (
+    {instance && instance.status == Status.READY ? (
       <S.IframeContainer onClose={stopDeployment}>
-        <S.Iframe src={url} />
+        <S.Iframe src={instance.url} />
       </S.IframeContainer>
     ) : (
       <S.Center>
         {!isConnectedToZeit && (
           <S.Button onClick={connectWithZeit}>Connect with Zeit</S.Button>
         )}
-        {commandNames.map(commandName => (
-          <S.Button
-            key={commandName}
-            onClick={() => startInstance({ commandName })}
-            disabled={!isConnectedToZeit}
-          >
-            {commandName}
-          </S.Button>
-        ))}
+        {!instance ? (
+          commandNames.map(commandName => (
+            <S.Button
+              key={commandName}
+              onClick={() => startInstance({ commandName })}
+              disabled={!isConnectedToZeit}
+            >
+              {commandName}
+            </S.Button>
+          ))
+        ) : (
+          <pre>{JSON.stringify(instance)}</pre>
+        )}
       </S.Center>
     )}
   </S.TerminalPanel>
 );
 
 const mapStateToProps = (state, {}) => {
-  const { isLoading, isError, isReady, url } = state.deployment;
+  const instanceName = state.currentInstance;
+  const instance =
+    state.instances && instanceName && state.instances[instanceName];
+
   const isConnectedToZeit = state.hasZeitToken;
 
   const commandNames = state.config.commands
@@ -46,12 +52,9 @@ const mapStateToProps = (state, {}) => {
     : [];
 
   return {
-    isLoading,
-    isError,
-    isReady,
+    instance,
     isConnectedToZeit,
-    commandNames,
-    url: url && "https://" + url
+    commandNames
   };
 };
 
