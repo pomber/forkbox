@@ -14,7 +14,7 @@ interface Instance {
   status: Status;
   id: string;
   url: string;
-  timeoutId: number;
+  timerId: number;
 }
 
 interface InstanceStore {
@@ -77,7 +77,7 @@ export const changeInstanceStatus = ({
     case Status.READY:
     case Status.FROZEN:
     default:
-      throw Error("Bad instance status");
+      console.log("Changing", fromStatus, toStatus);
   }
 };
 
@@ -111,17 +111,62 @@ export const deploy = commandName => async (dispatch, getState) => {
       })
     );
   } else {
+    const timerId = setInterval(() => {
+      dispatch(pollInstance({ commandName }));
+    }, 500);
     dispatch(
       actions.updateInstance({
         commandName,
         status: Status.BUILDING,
         url: "https://" + deployment.url,
-        id: deployment.deploymentId
+        id: deployment.deploymentId,
+        timerId
       })
     );
   }
 
   return;
+};
+
+const pollInstance = ({ commandName }) => async (dispatch, getState) => {
+  const { instances } = getState();
+  const instance = instances[commandName];
+  const deployment = await api.getZeitDeployment({ deploymentId: instance.id });
+  console.log("poll", deployment);
+
+  switch (deployment.state) {
+    case "BUILD_ERROR":
+    case "DEPLOYMENT_ERROR":
+      clearTimeout(instance.timerId);
+      dispatch(
+        actions.updateInstance({
+          commandName,
+          status: Status.ERROR,
+          timerId: null
+        })
+      );
+      return;
+    case "READY":
+      clearTimeout(instance.timerId);
+      dispatch(
+        actions.updateInstance({
+          commandName,
+          status: Status.READY,
+          timerId: null
+        })
+      );
+      return;
+    case "FROZEN":
+      clearTimeout(instance.timerId);
+      dispatch(
+        actions.updateInstance({
+          commandName,
+          status: Status.FROZEN,
+          timerId: null
+        })
+      );
+      return;
+  }
 };
 
 export default reducer;

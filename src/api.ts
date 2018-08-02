@@ -213,7 +213,7 @@ export const deployToZeit = async ({
   // {
   //   deploymentId: "afewf",
   //   readyState: "INITIALIZING", // "READY" if it was cached
-  //   scale: {},
+  //   scale: { sfo1: { min: 0, max: 10 } },
   //   url: "forkbox-react-storybook-demo-eemudfqtcb.now.sh",
   //   warnings: []
   // };
@@ -222,11 +222,16 @@ export const deployToZeit = async ({
 };
 
 export const getZeitDeployment = async ({ deploymentId }) => {
-  const response = await fetch(
+  // {
+  //   uid: "MaBryFqAOlmQwNZxWeDrVeg5",
+  //   host: "forkbox-react-storybook-demo-lslnxmifaw.now.sh",
+  //   scale: { min: 0, max: 10, auto: true },
+  //   state: "BOOTED",
+  //   stateTs: "2018-08-02T19:04:04.215Z"
+  // };
+  return await fetchData<{ state: string }>(
     "https://api.zeit.co/v2/now/deployments/" + deploymentId
   );
-  console.log(response);
-  return response.json();
 };
 
 function utoa(str) {
