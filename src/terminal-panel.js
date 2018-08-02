@@ -1,8 +1,8 @@
 import React from "react";
 import * as S from "./styles";
 import { connect } from "react-redux";
-import { connectWithZeit, stopDeployment } from "./dispatchers";
-import { startInstance, Status } from "./instance-store";
+import { connectWithZeit } from "./dispatchers";
+import { startInstance, stopInstance, Status } from "./instance-store";
 
 const TerminalPanel = ({
   commandNames,
@@ -10,11 +10,13 @@ const TerminalPanel = ({
   isConnectedToZeit,
   connectWithZeit,
   startInstance,
-  stopDeployment
+  stopInstance
 }) => (
   <S.TerminalPanel>
     {instance && instance.status == Status.READY ? (
-      <S.IframeContainer onClose={stopDeployment}>
+      <S.IframeContainer
+        onClose={() => stopInstance({ commandName: instance.commandName })}
+      >
         <S.Iframe src={instance.url} />
       </S.IframeContainer>
     ) : (
@@ -61,7 +63,7 @@ const mapStateToProps = (state, {}) => {
 const mapDispatchToProps = {
   connectWithZeit,
   startInstance,
-  stopDeployment
+  stopInstance
 };
 
 export default connect(

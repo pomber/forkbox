@@ -1,6 +1,5 @@
 import * as api from "./api";
 import { actions } from "./reducers";
-import { killInstances } from "./now-api";
 import { getGithubToken, getZeitToken } from "./token-store";
 import { initInstances } from "./instance-store";
 
@@ -107,27 +106,6 @@ export const editText = text => (dispatch, getState) => {
 
 export const connectWithZeit = () => async (dispatch, getState) => {
   await getZeitToken();
-};
-
-const updateDeployment = (deployment, deploymentState, dispatch) => {
-  deployment.isLoading = ["DEPLOYING", "BOOTED", "BUILDING"].includes(
-    deploymentState
-  );
-  deployment.isReady = ["READY", "FROZEN"].includes(deploymentState);
-  deployment.isError = ["BUILD_ERROR", "DEPLOYMENT_ERROR"].includes(
-    deploymentState
-  );
-  dispatch(actions.receiveDeployment(deployment));
-};
-
-export const stopDeployment = () => async (dispatch, getState) => {
-  console.log("stop deployment");
-  const token = await getZeitToken();
-  const { deploymentId } = getState().deployment;
-  dispatch(actions.receiveDeployment({}));
-  // const result = await api.stopZeitDeployment({ token, deploymentId });
-  await killInstances(token, deploymentId);
-  console.log("stopped");
 };
 
 export const forkRepo = () => async (dispatch, getState) => {

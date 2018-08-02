@@ -1,6 +1,8 @@
 import fluxify from "./utils/fluxify";
 import { getZeitToken } from "./token-store";
 import * as api from "./api";
+import { Cplusplus } from "./old/icons";
+import * as nowApi from "./now-api";
 export enum Status {
   UNKNOWN,
   DEPLOYING,
@@ -11,6 +13,7 @@ export enum Status {
 }
 
 interface Instance {
+  commandName: string;
   status: Status;
   id: string;
   url: string;
@@ -31,15 +34,22 @@ const { actions, reducer } = fluxify(
     init(state, commandNames) {
       state.instances = Object.assign(
         {},
-        ...commandNames.map(name => ({ [name]: { status: Status.UNKNOWN } }))
+        ...commandNames.map(name => ({
+          [name]: { commandName: name, status: Status.UNKNOWN }
+        }))
       );
     },
     selectInstance(state, commandName: string) {
       state.currentInstance = commandName;
     },
-    updateInstance(state, { commandName, ...instancePatch }) {
-      const instance = state.instances[commandName];
-      state.instances[commandName] = Object.assign({}, instance, instancePatch);
+    unselectInstance(state, commandName: string) {
+      if (commandName == state.currentInstance) {
+        state.currentInstance = null;
+      }
+    },
+    updateInstance(state, patch) {
+      const instance = state.instances[patch.commandName];
+      state.instances[patch.commandName] = Object.assign({}, instance, patch);
     }
   }
 );
@@ -55,7 +65,12 @@ export const startInstance = ({ commandName }) => (dispatch, getState) => {
   dispatch(changeInstanceStatus({ commandName, toStatus: Status.READY }));
 };
 
-export const changeInstanceStatus = ({
+export const stopInstance = ({ commandName }) => (dispatch, getState) => {
+  dispatch(actions.unselectInstance(commandName));
+  dispatch(changeInstanceStatus({ commandName, toStatus: Status.FROZEN }));
+};
+
+const changeInstanceStatus = ({
   commandName,
   toStatus
 }: {
@@ -72,16 +87,31 @@ export const changeInstanceStatus = ({
       dispatch(
         actions.updateInstance({ commandName, status: Status.DEPLOYING })
       );
-      dispatch(deploy(commandName));
+      dispatch(deploy({ commandName }));
       break;
     case Status.READY:
+      if (toStatus == Status.FROZEN) {
+        dispatch(freeze({ commandName }));
+      }
     case Status.FROZEN:
+      if (toStatus == Status.READY) {
+        dispatch(actions.updateInstance({ commandName, status: Status.READY }));
+      }
     default:
       console.log("Changing", fromStatus, toStatus);
   }
 };
 
-export const deploy = commandName => async (dispatch, getState) => {
+const freeze = ({ commandName }) => async (dispatch, getState) => {
+  const token = await getZeitToken();
+  const { instances } = getState();
+  const instance = instances[commandName];
+  await nowApi.killInstances(token, instance.id);
+  //TODO fix when START is called whill killInstances is still working
+  dispatch(actions.updateInstance({ commandName, status: Status.FROZEN }));
+};
+
+const deploy = ({ commandName }) => async (dispatch, getState) => {
   const {
     dockerfile,
     repoName,
