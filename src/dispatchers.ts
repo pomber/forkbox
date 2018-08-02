@@ -2,6 +2,7 @@ import * as api from "./api";
 import { actions } from "./reducers";
 import { killInstances } from "./now-api";
 import { getGithubToken, getZeitToken } from "./token-store";
+import { initInstances } from "./instance-store";
 
 export const initNewBox = ({
   baseRepoOwner,
@@ -21,6 +22,7 @@ export const initNewBox = ({
   });
 
   dispatch(actions.receiveRepo(result));
+  dispatch(initInstances());
 
   await forkRepo()(dispatch, getState);
   await createBoxBranch()(dispatch, getState);
@@ -51,6 +53,7 @@ export const initBox = ({
   });
 
   dispatch(actions.initForkedRepo(result));
+  dispatch(initInstances());
 };
 
 export const selectEntry = entry => (dispatch, getState) => {
@@ -104,44 +107,6 @@ export const editText = text => (dispatch, getState) => {
 
 export const connectWithZeit = () => async (dispatch, getState) => {
   await getZeitToken();
-};
-
-export const deploy = commandName => async (dispatch, getState) => {
-  const {
-    dockerfile,
-    repoName,
-    config,
-    forkedRepoUrl,
-    boxBranchName
-  } = getState();
-  const token = await getZeitToken();
-  const env = config.commands.find(c => c.name === commandName).env;
-  const deployment = await api.deployToZeit({
-    token,
-    dockerfile,
-    repoName,
-    repoUrl: forkedRepoUrl,
-    boxBranch: boxBranchName,
-    env
-  });
-  console.log("deploy", deployment);
-  let deploymentState = deployment.readyState;
-  updateDeployment(deployment, deploymentState, dispatch);
-  while (deployment.isLoading) {
-    //TODO I think this doesn't work
-    await wait(500);
-    let update = await api.getZeitDeployment({
-      deploymentId: deployment.deploymentId
-    });
-    console.log("update", deployment);
-    deploymentState = update.state;
-    updateDeployment(deployment, deploymentState, dispatch);
-  }
-  if (deployment.isError) {
-    throw new Error(deployment);
-  }
-
-  return;
 };
 
 const updateDeployment = (deployment, deploymentState, dispatch) => {

@@ -199,15 +199,17 @@ export const deployToZeit = async ({
     },
     env
   };
-  const response = await fetch("https://api.zeit.co/v3/now/deployments", {
+  const data = await fetchData<{
+    deploymentId: string;
+    readyState: string;
+    url: string;
+  }>("https://api.zeit.co/v3/now/deployments", {
     method: "post",
     body: JSON.stringify(body),
     headers: new Headers({
       authorization: "Bearer " + token
     })
   });
-
-  const data = await response.json();
   // {
   //   deploymentId: "afewf",
   //   readyState: "INITIALIZING", // "READY" if it was cached

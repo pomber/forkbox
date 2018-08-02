@@ -1,7 +1,8 @@
 import React from "react";
 import * as S from "./styles";
 import { connect } from "react-redux";
-import { connectWithZeit, deploy, stopDeployment } from "./dispatchers";
+import { connectWithZeit, stopDeployment } from "./dispatchers";
+import { startInstance } from "./instance-store";
 
 const TerminalPanel = ({
   isReady,
@@ -9,7 +10,7 @@ const TerminalPanel = ({
   commandNames,
   isConnectedToZeit,
   connectWithZeit,
-  deploy,
+  startInstance,
   stopDeployment
 }) => (
   <S.TerminalPanel>
@@ -25,7 +26,7 @@ const TerminalPanel = ({
         {commandNames.map(commandName => (
           <S.Button
             key={commandName}
-            onClick={() => deploy(commandName)}
+            onClick={() => startInstance({ commandName })}
             disabled={!isConnectedToZeit}
           >
             {commandName}
@@ -56,7 +57,7 @@ const mapStateToProps = (state, {}) => {
 
 const mapDispatchToProps = {
   connectWithZeit,
-  deploy,
+  startInstance,
   stopDeployment
 };
 

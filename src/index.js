@@ -9,8 +9,9 @@ import App from "./app";
 import { injectGlobalStyle } from "./styles";
 import { bindRouter } from "./router-new";
 import tokenReducer from "./token-store";
+import instanceReducer from "./instance-store";
 
-const reducers = [reducer, tokenReducer];
+const reducers = [reducer, tokenReducer, instanceReducer];
 const mainReducer = (state, action) => {
   console.log("action", action);
   if (!state) {
