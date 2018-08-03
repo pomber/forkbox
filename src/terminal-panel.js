@@ -35,7 +35,7 @@ const TerminalPanel = ({
             </S.Button>
           ))
         ) : (
-          <pre>{JSON.stringify(instance)}</pre>
+          <pre>{JSON.stringify(instance, null, 2)}</pre>
         )}
       </S.Center>
     )}
