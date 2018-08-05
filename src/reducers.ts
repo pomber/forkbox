@@ -140,6 +140,7 @@ export const { actions, reducer } = fluxify(initialState, {
   },
   receiveBlobText(state, { path, text }) {
     state.texts[path] = text;
+    state.entries[path].loaded = true;
   },
   editText(state, { path, text }) {
     state.texts[path] = text;
