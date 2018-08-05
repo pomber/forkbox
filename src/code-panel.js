@@ -1,9 +1,10 @@
 import React from "react";
 import MonacoEditor from "react-monaco-editor";
+import { KeyCode, KeyMod } from "monaco-editor";
 import * as S from "./styles";
 import { connect } from "react-redux";
 import getLanguage from "./utils/language-detector";
-import { editText } from "./dispatchers";
+import { saveEntry, editText } from "./dispatchers";
 
 const options = {
   minimap: { enabled: false },
@@ -12,7 +13,7 @@ const options = {
   theme: "vs-dark"
 };
 
-const CodePanel = ({ text, language, onChange }) => (
+const CodePanel = ({ text, language, onChange, saveEntry }) => (
   <S.CodePanel>
     <MonacoEditor
       value={text}
@@ -21,6 +22,9 @@ const CodePanel = ({ text, language, onChange }) => (
       language={language}
       editorDidMount={editor => {
         window.addEventListener("resize", () => editor.layout());
+        editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_S, () => {
+          saveEntry();
+        });
       }}
     />
   </S.CodePanel>
@@ -36,7 +40,8 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-  onChange: editText
+  onChange: editText,
+  saveEntry
 };
 
 export default connect(
