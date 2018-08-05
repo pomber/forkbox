@@ -13,7 +13,7 @@ const options = {
   theme: "vs-dark"
 };
 
-const CodePanel = ({ text, language, onChange, saveEntry }) => (
+const CodePanel = ({ resizeEmitter, text, language, onChange, saveEntry }) => (
   <S.CodePanel>
     <MonacoEditor
       value={text}
@@ -21,7 +21,7 @@ const CodePanel = ({ text, language, onChange, saveEntry }) => (
       onChange={onChange}
       language={language}
       editorDidMount={editor => {
-        window.addEventListener("resize", () => editor.layout());
+        resizeEmitter.subscribe(() => editor.layout());
         editor.addCommand(KeyMod.CtrlCmd | KeyCode.KEY_S, () => {
           saveEntry();
         });

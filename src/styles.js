@@ -15,16 +15,8 @@ export const injectGlobalStyle = () => injectGlobal`
   }
 `;
 
-export const Box = styled.div`
-  display: flex;
-  flex-direction: row;
-  background: #222;
-  color: #fafafa;
-  height: 100%;
-`;
-
 export const FilePanel = styled.div`
-  width: 200px;
+  width: 100%;
   height: 100%;
   padding: 10px;
   display: flex;
@@ -47,11 +39,13 @@ export const FilePanelButtons = styled.div`
 export const CodePanel = styled.div`
   flex: 1;
   overflow: hidden;
+  height: 100%;
 `;
 
 export const TerminalPanel = styled.div`
   flex: 0.7;
   overflow: hidden;
+  height: 100%;
 `;
 
 export const DockerForm = styled.div`
