@@ -19,6 +19,9 @@ const CodePanel = ({ text, language, onChange }) => (
       options={options}
       onChange={onChange}
       language={language}
+      editorDidMount={editor => {
+        window.addEventListener("resize", () => editor.layout());
+      }}
     />
   </S.CodePanel>
 );
