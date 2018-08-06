@@ -71,6 +71,7 @@ export const TerminalPanel = styled.div`
   flex: 0.7;
   overflow: hidden;
   height: 100%;
+  color: #ccc;
 `;
 
 export const DockerForm = styled.div`

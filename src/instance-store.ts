@@ -17,7 +17,8 @@ interface Instance {
   status: Status;
   id: string;
   url: string;
-  timerId: number;
+  backoff?: number;
+  logs?: string;
 }
 
 interface InstanceStore {
@@ -195,6 +196,7 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
       );
       return;
     default:
+      dispatch(fetchLogs({ commandName }));
       const backoff = Math.min(instance.backoff * 1.1, 10000);
       setTimeout(() => {
         dispatch(pollInstance({ commandName }));
@@ -206,6 +208,18 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
         })
       );
   }
+};
+
+const fetchLogs = ({ commandName }) => async (dispatch, getState) => {
+  const { instances } = getState();
+  const instance = instances[commandName];
+  const logs = await nowApi.getLogs(instance.id);
+  dispatch(
+    actions.updateInstance({
+      commandName,
+      logs
+    })
+  );
 };
 
 export default reducer;

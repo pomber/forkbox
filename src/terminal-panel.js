@@ -34,6 +34,14 @@ const TerminalPanel = ({
               {commandName}
             </S.Button>
           ))
+        ) : instance.url ? (
+          <div>
+            <p>Building...</p>
+            {instance.logs && <pre>{instance.logs}</pre>}
+            <a target="_blank" rel="noopener noreferrer" href={instance.url}>
+              Full logs
+            </a>
+          </div>
         ) : (
           <pre>{JSON.stringify(instance, null, 2)}</pre>
         )}

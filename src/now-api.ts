@@ -5,7 +5,7 @@ export const getDeployment = async (deploymentId: string) => {
     uid: string;
     host: string;
     state: string;
-  }>("https://api.zeit.co/v2/now/deployments/" + deploymentId);
+  }>("https://api.zeit.co/v4/now/deployments/" + deploymentId);
 };
 
 export const createDockerDeployment = async (
@@ -62,7 +62,13 @@ export const killInstances = async (token: string, deploymentId: string) => {
   );
 };
 
-export const subscribeToStateChanges = (
-  deploymentId: string,
-  onChange: (state: string) => void
-) => {};
+type Log = { text: string };
+export const getLogs = async (deploymentId: string) => {
+  const logs = await fetchData<Log[]>(
+    `https://api.zeit.co/v1/now/deployments/${deploymentId}/events`
+  );
+  return logs
+    .slice(-10)
+    .map(log => log.text)
+    .join("\n");
+};
