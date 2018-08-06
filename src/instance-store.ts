@@ -141,16 +141,17 @@ const deploy = ({ commandName }) => async (dispatch, getState) => {
       })
     );
   } else {
-    const timerId = setInterval(() => {
+    const backoff = 200;
+    setTimeout(() => {
       dispatch(pollInstance({ commandName }));
-    }, 500);
+    }, backoff);
     dispatch(
       actions.updateInstance({
         commandName,
         status: Status.BUILDING,
         url: "https://" + deployment.url,
         id: deployment.deploymentId,
-        timerId
+        backoff
       })
     );
   }
@@ -167,7 +168,6 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
   switch (deployment.state) {
     case "BUILD_ERROR":
     case "DEPLOYMENT_ERROR":
-      clearTimeout(instance.timerId);
       dispatch(
         actions.updateInstance({
           commandName,
@@ -177,7 +177,6 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
       );
       return;
     case "READY":
-      clearTimeout(instance.timerId);
       dispatch(
         actions.updateInstance({
           commandName,
@@ -187,7 +186,6 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
       );
       return;
     case "FROZEN":
-      clearTimeout(instance.timerId);
       dispatch(
         actions.updateInstance({
           commandName,
@@ -196,6 +194,17 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
         })
       );
       return;
+    default:
+      const backoff = Math.min(instance.backoff * 1.1, 10000);
+      setTimeout(() => {
+        dispatch(pollInstance({ commandName }));
+      }, backoff);
+      dispatch(
+        actions.updateInstance({
+          commandName,
+          backoff
+        })
+      );
   }
 };
 
