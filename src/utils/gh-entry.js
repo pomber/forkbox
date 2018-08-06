@@ -4,7 +4,7 @@ export const getLanguage = filename =>
   filenameRegex.find(x => x.regex.test(filename)).lang;
 
 export const getIcon = path => {
-  let iconId = "_tex";
+  let iconId = "_default";
   if (!path) return icons.iconDefinitions[iconId];
 
   const filename = /([^/]*)$/.exec(path)[1].toLowerCase();
