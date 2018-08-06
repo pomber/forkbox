@@ -1,7 +1,8 @@
 import styled from "react-emotion";
-import { injectGlobal, cx } from "emotion";
+import { injectGlobal, fontFace, cx } from "emotion";
 import { withClass } from "./utils/tools";
 import React from "react";
+import "./seti.woff";
 
 export const injectGlobalStyle = () => injectGlobal`
   * {
@@ -12,6 +13,11 @@ export const injectGlobalStyle = () => injectGlobal`
     height: 100%;
     margin: 0;
     padding: 0;
+  }
+
+  @font-face {
+    font-family: 'seti';
+    src: url('/fonts/seti.woff');
   }
 `;
 
@@ -240,16 +246,50 @@ export const EntryNode = ({
     `}
     {...rest}
   >
-    <span
-      css={`
-        transform: ${collapsed && "rotate(-90deg)"};
-        visibility: ${!isTree && "hidden"};
-        &::after {
-          content: "▾";
-          padding: 0 6px;
-        }
-      `}
-    />
+    {isTree ? (
+      <span
+        css={`
+        box-sizing: content-box;
+          background-size: 16px;
+          background-position: 50% 50%;
+          background-repeat: no-repeat;
+          padding-right: 6px;
+          width: 16px;
+          height: 22px;
+          display: inline-block;
+          vertical-align: top;
+          content: " ";
+          background-image: url("${
+            collapsed
+              ? "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M6 4v8l4-4-4-4zm1 2.414L8.586 8 7 9.586V6.414z'/%3E%3C/svg%3E"
+              : "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='%23E8E8E8' d='M11 10H5.344L11 4.414V10z'/%3E%3C/svg%3E"
+          }");
+        `}
+      />
+    ) : (
+      <span
+        css={`
+          &::after {
+            background-size: 16px;
+            background-position: 0;
+            background-repeat: no-repeat;
+            padding-right: 6px;
+            width: 16px;
+            height: 22px;
+            display: inline-block;
+            -webkit-font-smoothing: antialiased;
+            vertical-align: top;
+            flex-shrink: 0;
+
+            font-family: seti;
+            font-size: 150%;
+            content: "\\E047";
+            color: #cbcb41;
+          }
+        `}
+      />
+    )}
+
     <Truncate text={name} />
   </div>
 );
