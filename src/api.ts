@@ -195,6 +195,9 @@ export const deployToZeit = async ({
           REPO_URL: repoUrl,
           BRANCH_NAME: boxBranch
         }
+      },
+      limits: {
+        maxConcurrentReqs: 1
       }
     },
     env
@@ -203,7 +206,7 @@ export const deployToZeit = async ({
     deploymentId: string;
     readyState: string;
     url: string;
-  }>("https://api.zeit.co/v3/now/deployments", {
+  }>("https://api.zeit.co/v4/now/deployments", {
     method: "post",
     body: JSON.stringify(body),
     headers: new Headers({
