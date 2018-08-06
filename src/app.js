@@ -23,7 +23,7 @@ class App extends React.Component {
     return (
       <SplitPane
         split="vertical"
-        defaultSize="33%"
+        defaultSize={220}
         style={{
           background: "#222",
           height: "100%"
@@ -33,7 +33,7 @@ class App extends React.Component {
         <FilePanel />
         <SplitPane
           split="vertical"
-          defaultSize="50%"
+          defaultSize="60%"
           style={{ height: "100%" }}
           onDragFinished={() => resizeEmitter.trigger()}
         >
