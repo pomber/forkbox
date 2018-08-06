@@ -227,10 +227,15 @@ export const EntryNode = ({
 }) => (
   <div
     css={`
+      height: 22px;
       display: flex;
       cursor: pointer;
-      color: ${isDirty ? "#eee" : "#aaa"};
-      font-style: ${isDirty && "italic"};
+      color: ${isDirty ? "#e2c08d" : "#ccc"};
+      font-size: 13px;
+      line-height: 22px;
+      user-select: none;
+      font-family: -apple-system, BlinkMacSystemFont, Segoe WPC, Segoe UI,
+        HelveticaNeue-Light, Ubuntu, Droid Sans, sans-serif;
       background: ${isSelected && !isTree && "rgba(120,120,120,0.25)"};
     `}
     {...rest}
@@ -241,6 +246,7 @@ export const EntryNode = ({
         visibility: ${!isTree && "hidden"};
         &::after {
           content: "▾";
+          padding: 0 6px;
         }
       `}
     />
@@ -249,7 +255,6 @@ export const EntryNode = ({
 );
 
 export const EntryChildren = styled.div`
-  overflow-y: auto;
   margin-left: 16px;
   display: ${({ hide }) => hide && "none"};
 `;
