@@ -2,6 +2,7 @@ import React from "react";
 import * as S from "./styles";
 import { connect } from "react-redux";
 import { selectEntry } from "./dispatchers";
+import { getIcon } from "./utils/gh-entry";
 
 const FileNode = ({ entry, selectEntry }) => (
   <div>
@@ -11,6 +12,7 @@ const FileNode = ({ entry, selectEntry }) => (
       isTree={entry.isTree}
       isDirty={entry.isDirty}
       isSelected={entry.isSelected}
+      icon={getIcon(entry.path)}
       onClick={() => selectEntry(entry)}
     />
     {entry.isTree && (

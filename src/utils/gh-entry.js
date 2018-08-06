@@ -1,5 +1,26 @@
+import icons from "./seti-icons.json";
+
 export const getLanguage = filename =>
   filenameRegex.find(x => x.regex.test(filename)).lang;
+
+export const getIcon = path => {
+  let iconId = "_tex";
+  if (!path) return icons.iconDefinitions[iconId];
+
+  const filename = /([^/]*)$/.exec(path)[1].toLowerCase();
+  const extension = /([^.]*)$/.exec(path)[1].toLowerCase();
+  const language = getLanguage(filename);
+
+  if (filename in icons.fileNames) {
+    iconId = icons.fileNames[filename];
+  } else if (extension in icons.fileExtensions) {
+    iconId = icons.fileExtensions[extension];
+  } else if (language in icons.languageIds) {
+    iconId = icons.languageIds[language];
+  }
+
+  return icons.iconDefinitions[iconId];
+};
 
 const filenameRegex = [
   { lang: "javascript", regex: /\.js$|\.jsx$/i },

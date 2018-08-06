@@ -229,6 +229,7 @@ export const EntryNode = ({
   isTree,
   isDirty,
   isSelected,
+  icon,
   ...rest
 }) => (
   <div
@@ -283,8 +284,8 @@ export const EntryNode = ({
 
             font-family: seti;
             font-size: 150%;
-            content: "\\E047";
-            color: #cbcb41;
+            content: "${icon.fontCharacter}";
+            color: ${icon.fontColor};
           }
         `}
       />
