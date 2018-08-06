@@ -10,12 +10,10 @@ import "react-perfect-scrollbar/dist/css/styles.css";
 
 const FilePanel = ({ saveEntry, sendPullRequest }) => (
   <S.FilePanel>
-    <S.FilePanelButtons>
-      <MdSave size={20} onClick={saveEntry} />
-      <GoFileText size={20} />
-      <GoFileDirectory size={20} />
-      <GoTrashcan size={20} />
-    </S.FilePanelButtons>
+    {/* <S.FilePanelButtons>
+      <S.NewFileButton />
+      <S.NewFolderButton />
+    </S.FilePanelButtons> */}
     <PerfectScrollbar>
       <FileTree path="/" />
     </PerfectScrollbar>

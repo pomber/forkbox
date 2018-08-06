@@ -30,16 +30,35 @@ export const FilePanel = styled.div`
 `;
 
 export const FilePanelButtons = styled.div`
-  color: rgba(120, 120, 120, 1);
-  border-bottom: 1px solid rgba(120, 120, 120, 0.5);
-  margin-bottom: 3px;
   display: flex;
-  flex-direction: row;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
   justify-content: flex-end;
-  & > * {
-    cursor: pointer;
-    margin: 2px 2px 4px 2px;
-  }
+`;
+
+export const NewFileButton = styled.div`
+  width: 28px;
+  height: 22px;
+  background-size: 16px;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  margin-right: 0;
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23C5C5C5' d='M12 3H8v1h3v3h3v7H6V8H5v7h10V6z'/%3E%3Cpath fill='%2389D185' d='M7 3.018H5V1H3.019v2.018H1V5h2.019v2H5V5h2V3.018z'/%3E%3C/svg%3E")
+    50% no-repeat;
+  cursor: pointer;
+`;
+
+export const NewFolderButton = styled.div`
+  width: 28px;
+  height: 22px;
+  background-size: 16px;
+  background-position: 50%;
+  background-repeat: no-repeat;
+  margin-right: 0;
+  cursor: pointer;
+  background: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16'%3E%3Cpath fill='%23C5C5C5' d='M14 4H9.618l-1 2H6v2H3v6h12V4h-1zm0 2h-3.882l.5-1H14v1z'/%3E%3Cpath fill='%2389D185' d='M7 3.018H5V1H3.019v2.018H1V5h2.019v2H5V5h2z'/%3E%3C/svg%3E")
+    50% no-repeat;
 `;
 
 export const CodePanel = styled.div`
