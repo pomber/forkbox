@@ -197,7 +197,7 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
       return;
     default:
       dispatch(fetchLogs({ commandName }));
-      const backoff = Math.min(instance.backoff * 1.1, 10000);
+      const backoff = Math.min(instance.backoff * 1.3, 10000);
       setTimeout(() => {
         dispatch(pollInstance({ commandName }));
       }, backoff);

@@ -68,7 +68,7 @@ export const getLogs = async (deploymentId: string) => {
     `https://api.zeit.co/v1/now/deployments/${deploymentId}/events`
   );
   return logs
-    .slice(-10)
+    .slice(-20)
     .map(log => log.text)
     .join("\n");
 };
