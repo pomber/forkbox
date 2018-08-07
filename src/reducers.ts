@@ -20,6 +20,7 @@ interface Command {
 }
 
 interface State {
+  isHome?: boolean;
   repoName?: string;
   baseRepoId?: string;
   baseRepoUrl?: string;
@@ -50,6 +51,9 @@ let initialState: State = {
 };
 
 export const { actions, reducer } = fluxify(initialState, {
+  initHome(state) {
+    state.isHome = true;
+  },
   initForkedRepo(state, { object, ref, config, id, name, url, owner, parent }) {
     const entryList = mapEntries("/", object.entries);
 

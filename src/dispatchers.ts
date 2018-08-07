@@ -3,6 +3,10 @@ import { actions } from "./reducers";
 import { getGithubToken, getZeitToken } from "./token-store";
 import { initInstances } from "./instance-store";
 
+export const initHome = () => dispatch => {
+  dispatch(actions.initHome());
+};
+
 export const initNewBox = ({
   baseRepoOwner,
   repoName,

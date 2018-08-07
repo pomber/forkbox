@@ -1,4 +1,4 @@
-import { initBox, initNewBox } from "./dispatchers";
+import { initBox, initNewBox, initHome } from "./dispatchers";
 import { bind } from "./utils/routux";
 import { loadGithubToken, loadZeitToken } from "./token-store";
 
@@ -6,10 +6,15 @@ enum Path {
   NewBox,
   Box,
   GhCallback,
-  ZeitCallback
+  ZeitCallback,
+  Home
 }
 
 const entrypoints = {
+  [Path.Home]: {
+    pattern: "/",
+    dispatcher: initHome
+  },
   [Path.NewBox]: {
     pattern: "/f/:baseRepoOwner/:repoName/:baseBranchName*",
     dispatcher: initNewBox

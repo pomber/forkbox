@@ -4,6 +4,7 @@ import FilePanel from "./file-panel";
 import CodePanel from "./code-panel";
 import TerminalPanel from "./terminal-panel";
 import SplitPane from "react-split-pane";
+import { connect } from "react-redux";
 import "./resizer.css";
 
 const resizeEmitter = {
@@ -18,31 +19,34 @@ const resizeEmitter = {
 
 window.addEventListener("resize", () => resizeEmitter.trigger());
 
-class App extends React.Component {
-  render() {
-    return (
+const App = ({ isHome }) =>
+  isHome ? (
+    <h1>Comming Soon</h1>
+  ) : (
+    <SplitPane
+      split="vertical"
+      defaultSize={220}
+      style={{
+        background: "#222",
+        height: "100%"
+      }}
+      onDragFinished={() => resizeEmitter.trigger()}
+    >
+      <FilePanel />
       <SplitPane
         split="vertical"
-        defaultSize={220}
-        style={{
-          background: "#222",
-          height: "100%"
-        }}
+        defaultSize="60%"
+        style={{ height: "100%" }}
         onDragFinished={() => resizeEmitter.trigger()}
       >
-        <FilePanel />
-        <SplitPane
-          split="vertical"
-          defaultSize="60%"
-          style={{ height: "100%" }}
-          onDragFinished={() => resizeEmitter.trigger()}
-        >
-          <CodePanel resizeEmitter={resizeEmitter} />
-          <TerminalPanel />
-        </SplitPane>
+        <CodePanel resizeEmitter={resizeEmitter} />
+        <TerminalPanel />
       </SplitPane>
-    );
-  }
-}
+    </SplitPane>
+  );
 
-export default App;
+const mapStateToProps = ({ isHome }) => {
+  return { isHome };
+};
+
+export default connect(mapStateToProps)(App);
