@@ -1,7 +1,6 @@
 import fluxify from "./utils/fluxify";
 import { getZeitToken } from "./token-store";
 import * as api from "./api";
-import { Cplusplus } from "./old/icons";
 import * as nowApi from "./now-api";
 export enum Status {
   UNKNOWN,
