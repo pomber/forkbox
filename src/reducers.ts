@@ -15,7 +15,8 @@ interface Entry {
 
 interface Command {
   name: string;
-  env: Record<string, string>;
+  env?: Record<string, string>;
+  dockerfile: string;
 }
 
 interface State {
@@ -33,7 +34,6 @@ interface State {
 
   config: { commands?: Command[] };
   deployment: object;
-  dockerfile?: string;
 
   selectedBlob?: Path;
   tree: Record<string, string[]>;
@@ -52,13 +52,20 @@ let initialState: State = {
 export const { actions, reducer } = fluxify(initialState, {
   initForkedRepo(state, { object, ref, config, id, name, url, owner, parent }) {
     const entryList = mapEntries("/", object.entries);
-    const dockerfileEntry = config.entries.find(
-      e => e.name === "dev.dockerfile"
-    );
 
     const configFile = JSON.parse(
       config.entries.find(e => e.name === "config.json").object.text
     );
+
+    const newConfig = {
+      commands: configFile.commands.map(command => ({
+        name: command.name,
+        env: command.env || {},
+        dockerfile: config.entries.find(
+          e => e.name === (command.dockerfile || "dev.dockerfile")
+        ).object.text
+      }))
+    };
 
     state.forkedRepoId = id;
     state.forkedRepoOwner = owner.login;
@@ -70,8 +77,7 @@ export const { actions, reducer } = fluxify(initialState, {
     state.baseRepoUrl = parent.url;
     state.baseRepoOwner = parent.owner.login;
 
-    state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
-    state.config = configFile;
+    state.config = newConfig;
     state.tree["/"] = entryList.map(e => e.path);
     for (const entry of entryList) {
       state.entries[entry.path] = entry;
@@ -79,13 +85,20 @@ export const { actions, reducer } = fluxify(initialState, {
   },
   receiveRepo(state, { object, ref, config, id, name, url, owner }) {
     const entryList = mapEntries("/", object.entries);
-    const dockerfileEntry = config.entries.find(
-      e => e.name === "dev.dockerfile"
-    );
 
     const configFile = JSON.parse(
       config.entries.find(e => e.name === "config.json").object.text
     );
+
+    const newConfig = {
+      commands: configFile.commands.map(command => ({
+        name: command.name,
+        env: command.env || {},
+        dockerfile: config.entries.find(
+          e => e.name === (command.dockerfile || "dev.dockerfile")
+        ).object.text
+      }))
+    };
 
     state.baseRepoId = id;
     state.repoName = name;
@@ -93,8 +106,7 @@ export const { actions, reducer } = fluxify(initialState, {
     state.baseRepoOwner = owner.login;
     state.baseBranchSha = ref.target.oid;
     state.baseBranchName = ref.name;
-    state.dockerfile = dockerfileEntry && dockerfileEntry.object.text;
-    state.config = configFile;
+    state.config = newConfig;
     state.tree["/"] = entryList.map(e => e.path);
     for (const entry of entryList) {
       state.entries[entry.path] = entry;

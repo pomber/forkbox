@@ -113,15 +113,9 @@ const freeze = ({ commandName }) => async (dispatch, getState) => {
 };
 
 const deploy = ({ commandName }) => async (dispatch, getState) => {
-  const {
-    dockerfile,
-    repoName,
-    config,
-    forkedRepoUrl,
-    boxBranchName
-  } = getState();
+  const { repoName, config, forkedRepoUrl, boxBranchName } = getState();
   const token = await getZeitToken();
-  const env = config.commands.find(c => c.name === commandName).env;
+  const { env, dockerfile } = config.commands.find(c => c.name === commandName);
   const deployment = await api.deployToZeit({
     token,
     dockerfile,
@@ -167,13 +161,13 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
   console.log("poll", deployment);
 
   switch (deployment.state) {
+    case "ERROR":
     case "BUILD_ERROR":
     case "DEPLOYMENT_ERROR":
       dispatch(
         actions.updateInstance({
           commandName,
-          status: Status.ERROR,
-          timerId: null
+          status: Status.ERROR
         })
       );
       return;
@@ -181,8 +175,7 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
       dispatch(
         actions.updateInstance({
           commandName,
-          status: Status.READY,
-          timerId: null
+          status: Status.READY
         })
       );
       return;
@@ -190,8 +183,7 @@ const pollInstance = ({ commandName }) => async (dispatch, getState) => {
       dispatch(
         actions.updateInstance({
           commandName,
-          status: Status.FROZEN,
-          timerId: null
+          status: Status.FROZEN
         })
       );
       return;
