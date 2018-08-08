@@ -65,9 +65,11 @@ export const { actions, reducer } = fluxify(initialState, {
       commands: configFile.commands.map(command => ({
         name: command.name,
         env: command.env || {},
-        dockerfile: config.entries.find(
-          e => e.name === (command.dockerfile || "dev.dockerfile")
-        ).object.text
+        dockerfile: command.dockerhub
+          ? `FROM ${command.dockerhub}`
+          : config.entries.find(
+              e => e.name === (command.dockerfile || "dev.dockerfile")
+            ).object.text
       }))
     };
 
@@ -98,9 +100,11 @@ export const { actions, reducer } = fluxify(initialState, {
       commands: configFile.commands.map(command => ({
         name: command.name,
         env: command.env || {},
-        dockerfile: config.entries.find(
-          e => e.name === (command.dockerfile || "dev.dockerfile")
-        ).object.text
+        dockerfile: command.dockerhub
+          ? `FROM ${command.dockerhub}`
+          : config.entries.find(
+              e => e.name === (command.dockerfile || "dev.dockerfile")
+            ).object.text
       }))
     };
 

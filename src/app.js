@@ -45,8 +45,6 @@ const App = ({ isHome }) =>
     </SplitPane>
   );
 
-const mapStateToProps = ({ isHome }) => {
-  return { isHome };
-};
+const mapStateToProps = ({ isHome }) => ({ isHome });
 
 export default connect(mapStateToProps)(App);

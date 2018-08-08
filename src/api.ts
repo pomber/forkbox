@@ -200,7 +200,10 @@ export const deployToZeit = async ({
         maxConcurrentReqs: 1
       }
     },
-    env
+    env: Object.assign({}, env, {
+      FORKBOX_REPO_URL: repoUrl,
+      FORKBOX_BRANCH_NAME: boxBranch
+    })
   };
   const data = await fetchData<{
     deploymentId: string;
