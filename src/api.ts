@@ -198,6 +198,9 @@ export const deployToZeit = async ({
       },
       limits: {
         maxConcurrentReqs: 1
+      },
+      features: {
+        cloud: "v2"
       }
     },
     env: Object.assign({}, env, {
