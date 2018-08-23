@@ -58,6 +58,9 @@ export const initInstances = () => (dispatch, getState) => {
   const commands = getState().config.commands;
   const commandNames = commands.map(c => c.name);
   dispatch(actions.init(commandNames));
+  commandNames.forEach(commandName =>
+    dispatch(changeInstanceStatus({ commandName, toStatus: Status.READY }))
+  );
 };
 
 export const startInstance = ({ commandName }) => (dispatch, getState) => {
@@ -135,7 +138,7 @@ const deploy = ({ commandName }) => async (dispatch, getState) => {
       })
     );
   } else {
-    const backoff = 200;
+    const backoff = 500;
     setTimeout(() => {
       dispatch(pollInstance({ commandName }));
     }, backoff);
