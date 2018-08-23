@@ -79,9 +79,9 @@ export const { actions, reducer } = fluxify(initialState, {
     state.baseBranchSha = ref.target.oid;
 
     state.repoName = name;
-    state.baseRepoId = parent.id;
-    state.baseRepoUrl = parent.url;
-    state.baseRepoOwner = parent.owner.login;
+    state.baseRepoId = parent ? parent.id : id;
+    state.baseRepoUrl = parent ? parent.url : url;
+    state.baseRepoOwner = parent ? parent.owner.login : owner.login;
 
     state.config = newConfig;
     state.tree["/"] = entryList.map(e => e.path);
