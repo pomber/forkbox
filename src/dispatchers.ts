@@ -1,7 +1,7 @@
 import * as api from "./api";
 import { actions } from "./reducers";
 import { getGithubToken, getZeitToken } from "./token-store";
-import { initInstances } from "./instance-store";
+import { initInstances, triggerDeploys } from "./instance-store";
 
 export const initHome = () => dispatch => {
   dispatch(actions.initHome());
@@ -57,6 +57,7 @@ export const initBox = ({
 
   dispatch(actions.initForkedRepo(result));
   dispatch(initInstances());
+  dispatch(triggerDeploys());
 };
 
 export const selectEntry = entry => (dispatch, getState) => {
@@ -135,6 +136,7 @@ const createBoxBranch = () => async (dispatch, getState) => {
     newBranch
   });
   dispatch(actions.receiveBoxBranch(newBranch));
+  dispatch(triggerDeploys());
 };
 
 export const saveEntry = () => async (dispatch, getState) => {
