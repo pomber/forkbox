@@ -79,6 +79,7 @@ export const { actions, reducer } = fluxify(initialState, {
     state.baseBranchSha = ref.target.oid;
 
     state.repoName = name;
+    // FIX the base repo isn't always the parent
     state.baseRepoId = parent ? parent.id : id;
     state.baseRepoUrl = parent ? parent.url : url;
     state.baseRepoOwner = parent ? parent.owner.login : owner.login;
